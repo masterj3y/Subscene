@@ -1,5 +1,6 @@
 package github.masterj3y.subscene
 
+import io.ktor.client.*
 import org.junit.Test
 
 import org.junit.Assert.*
