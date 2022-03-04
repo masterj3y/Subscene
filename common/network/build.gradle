@@ -1,7 +1,9 @@
 plugins {
     id 'com.android.library'
     id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.kapt'
     id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version"
+    id 'dagger.hilt.android.plugin'
 }
 
 android {
@@ -31,6 +33,9 @@ android {
 }
 
 dependencies {
+
+    implementation "com.google.dagger:hilt-android:$dagger_version"
+    kapt "com.google.dagger:hilt-android-compiler:$dagger_version"
 
     api "io.ktor:ktor-client-android:$ktor_client_version"
     api "io.ktor:ktor-client-serialization:$ktor_client_version"
