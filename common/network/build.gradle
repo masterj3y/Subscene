@@ -1,0 +1,40 @@
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+    id 'org.jetbrains.kotlin.plugin.serialization' version "$kotlin_version"
+}
+
+android {
+    compileSdk rootProject.compile_sdk_version
+
+    defaultConfig {
+        minSdk rootProject.min_sdk_version
+        targetSdk rootProject.target_sdk_version
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+}
+
+dependencies {
+
+    api "io.ktor:ktor-client-android:$ktor_client_version"
+    api "io.ktor:ktor-client-serialization:$ktor_client_version"
+    api "io.ktor:ktor-client-gson:$ktor_client_version"
+
+    testImplementation project(':common:testutils')
+}

@@ -14,3 +14,5 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Subscene"
 include ':app'
+include ':common:network'
+include ':common:testutils'
