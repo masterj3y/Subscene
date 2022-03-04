@@ -11,7 +11,8 @@ class KtorClientTest {
 
     @Test
     fun `ktor client and serialization work correctly`(): Unit = runBlocking {
-        val response: HttpResponse = ktorClient.get("https://api.ipify.org/?format=json")
+        val response: HttpResponse =
+            NetworkModule.ktorClient.get("https://api.ipify.org/?format=json")
         response.status shouldBe HttpStatusCode.OK
     }
 }
