@@ -2,7 +2,7 @@ package github.masterj3y.testutils.base
 
 import java.io.BufferedReader
 
-abstract class ResourceReader {
+open class ResourceReader {
 
     fun readApiResponse(fileName: String): String = readResource("api-response/$fileName")
 

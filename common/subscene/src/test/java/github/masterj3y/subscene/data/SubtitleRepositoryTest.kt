@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 
-class SubtitleRepositoryImplTest : TestCase() {
+class SubtitleRepositoryTest : TestCase() {
 
     private val subtitleDataSource: SubtitleDataSource =
         SubtitleDataSourceImpl(NetworkModule.ktorClient)
@@ -23,7 +23,7 @@ class SubtitleRepositoryImplTest : TestCase() {
 
     @Test
     fun testSearchMovieByTitle(): Unit = runBlocking {
-        subtitleRepository.searchMovieByTitle("hello")
+        subtitleRepository.searchMovieByTitle("mj")
             .onCompletion { cause: Throwable? ->
                 cause shouldBe null
             }

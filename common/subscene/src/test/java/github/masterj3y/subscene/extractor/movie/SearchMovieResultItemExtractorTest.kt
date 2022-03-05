@@ -10,7 +10,7 @@ class SearchMovieResultItemExtractorTest : ResourceReader() {
 
     @Test
     fun testExtract() {
-        val response = readApiResponse("search-movie-item-response.html")
+        val response = readApiResponse("search-movie-item-response")
         val extractor: Extractor<SearchMovieResultItem?> = SearchMovieResultItemExtractor()
         val item = extractor.extract(response)
 

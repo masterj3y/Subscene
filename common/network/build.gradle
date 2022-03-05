@@ -39,7 +39,6 @@ dependencies {
 
     api "io.ktor:ktor-client-android:$ktor_client_version"
     api "io.ktor:ktor-client-serialization:$ktor_client_version"
-    api "io.ktor:ktor-client-gson:$ktor_client_version"
 
     testImplementation project(':common:testutils')
 }
