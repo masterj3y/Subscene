@@ -52,6 +52,7 @@ dependencies {
 
     implementation project(':common:resources')
     implementation project(':common:network')
+    implementation project(':common:navigation')
     implementation project(':feature:search-movie')
 
     implementation 'androidx.core:core-ktx:1.7.0'
