@@ -50,6 +50,7 @@ android {
 
 dependencies {
 
+    implementation project(':common:resources')
     implementation project(':common:network')
 
     implementation 'androidx.core:core-ktx:1.7.0'
