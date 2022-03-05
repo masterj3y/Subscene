@@ -1,4 +1,4 @@
-package github.masterj3y.subscene.ui.theme
+package github.masterj3y.resources.theme
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Shapes

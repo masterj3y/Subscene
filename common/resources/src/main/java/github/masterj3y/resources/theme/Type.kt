@@ -1,4 +1,4 @@
-package github.masterj3y.subscene.ui.theme
+package github.masterj3y.resources.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle
