@@ -34,11 +34,10 @@ android {
 
 dependencies {
 
+    implementation project(':common:network')
+
     implementation "com.google.dagger:hilt-android:$dagger_version"
     kapt "com.google.dagger:hilt-android-compiler:$dagger_version"
-
-    api "io.ktor:ktor-client-android:$ktor_client_version"
-    api "io.ktor:ktor-client-serialization:$ktor_client_version"
 
     testImplementation project(':common:testutils')
 }

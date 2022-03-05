@@ -16,3 +16,4 @@ rootProject.name = "Subscene"
 include ':app'
 include ':common:network'
 include ':common:testutils'
+include ':common:subscene'
