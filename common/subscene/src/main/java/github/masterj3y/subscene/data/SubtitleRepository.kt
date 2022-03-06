@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.map
 
 interface SubtitleRepository {
 
-    suspend fun searchMovieByTitle(title: String): Flow<List<SearchMovieResultItem>?>
+    fun searchMovieByTitle(title: String): Flow<List<SearchMovieResultItem>?>
 }
 
 class SubtitleRepositoryImpl(
@@ -15,7 +15,7 @@ class SubtitleRepositoryImpl(
     private val movieExtractor: Extractor<List<SearchMovieResultItem>?>
 ) : SubtitleRepository {
 
-    override suspend fun searchMovieByTitle(title: String): Flow<List<SearchMovieResultItem>?> =
+    override fun searchMovieByTitle(title: String): Flow<List<SearchMovieResultItem>?> =
         subtitleDataSource.searchMovie(title).map {
             movieExtractor.extract(it)
         }

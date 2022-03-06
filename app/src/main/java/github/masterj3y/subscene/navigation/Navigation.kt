@@ -5,7 +5,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import github.masterj3y.navigation.Navigation
 import github.masterj3y.navigation.Route
-import github.masterj3y.searchmovie.SearchMovieScreen
+import github.masterj3y.searchmovie.screen.SearchMovieScreen
 
 @Composable
 internal fun MainNavigation(

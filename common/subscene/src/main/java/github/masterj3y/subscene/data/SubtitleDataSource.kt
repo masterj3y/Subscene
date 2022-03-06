@@ -11,14 +11,14 @@ import javax.inject.Inject
 
 interface SubtitleDataSource {
 
-    suspend fun searchMovie(title: String): Flow<String?>
+    fun searchMovie(title: String): Flow<String?>
 }
 
 class SubtitleDataSourceImpl
 @Inject
 constructor(private val httpClient: HttpClient) : SubtitleDataSource {
 
-    override suspend fun searchMovie(title: String): Flow<String?> = flow {
+    override fun searchMovie(title: String): Flow<String?> = flow {
 
         val response: String? = httpClient.post("${BASE_URL}subtitles/searchbytitle") {
             contentType(ContentType.Application.Json)
