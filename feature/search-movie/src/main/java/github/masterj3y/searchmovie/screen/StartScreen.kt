@@ -12,15 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import github.masterj3y.subscenecommon.model.SearchMovieResultItem
+import github.masterj3y.searchmovie.model.MovieItem
 
 @Composable
 internal fun StartScreen(
     isLoading: Boolean,
     movieTitle: String,
     onMovieTitleChange: (String) -> Unit,
-    movies: List<SearchMovieResultItem>,
-    onMovieClick: (SearchMovieResultItem) -> Unit
+    movies: List<MovieItem>,
+    onMovieClick: (MovieItem) -> Unit
 ) {
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -43,8 +43,8 @@ internal fun StartScreen(
 
 @Composable
 private fun ResultScreen(
-    movies: List<SearchMovieResultItem>,
-    onMovieClick: (SearchMovieResultItem) -> Unit
+    movies: List<MovieItem>,
+    onMovieClick: (MovieItem) -> Unit
 ) {
 
     LazyColumn {
@@ -55,7 +55,7 @@ private fun ResultScreen(
 }
 
 @Composable
-private fun MovieItem(movie: SearchMovieResultItem, onClick: (SearchMovieResultItem) -> Unit) {
+private fun MovieItem(movie: MovieItem, onClick: (MovieItem) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()

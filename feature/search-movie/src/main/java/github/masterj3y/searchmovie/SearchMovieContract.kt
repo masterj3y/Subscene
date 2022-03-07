@@ -1,12 +1,12 @@
 package github.masterj3y.searchmovie
 
-import github.masterj3y.subscenecommon.model.SearchMovieResultItem
+import github.masterj3y.searchmovie.model.MovieItem
 
 sealed class SearchMovieState {
 
     data class Start(
         val isLoading: Boolean = false,
-        val movies: List<SearchMovieResultItem> = listOf()
+        val movies: List<MovieItem> = listOf()
     ) : SearchMovieState()
 
     object Error : SearchMovieState()

@@ -3,14 +3,12 @@ package github.masterj3y.searchmovie
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.masterj3y.mvi.BaseViewModel
+import github.masterj3y.searchmovie.model.MovieItem
+import github.masterj3y.searchmovie.model.mapToMovieItem
 import github.masterj3y.subscenecommon.data.SubtitleRepository
-import github.masterj3y.subscenecommon.model.SearchMovieResultItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -40,6 +38,9 @@ class SearchMovieViewModel @Inject constructor(private val repository: SubtitleR
                     emitErrorState()
                 }
                 .filterNotNull()
+                .map {
+                    it.mapToMovieItem()
+                }
                 .collect {
                     emitResultState(it)
                 }
@@ -52,7 +53,7 @@ class SearchMovieViewModel @Inject constructor(private val repository: SubtitleR
         ?.copy(isLoading = true)
         ?.let(::emitState)
 
-    private fun emitResultState(result: List<SearchMovieResultItem>) =
+    private fun emitResultState(result: List<MovieItem>) =
         getCurrentState<SearchMovieState.Start>()
             ?.copy(isLoading = false, movies = result)
             ?.let(::emitState)
