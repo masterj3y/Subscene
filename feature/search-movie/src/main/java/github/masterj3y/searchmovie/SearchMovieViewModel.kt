@@ -16,6 +16,8 @@ import javax.inject.Inject
 class SearchMovieViewModel @Inject constructor(private val repository: SubtitleRepository) :
     BaseViewModel<SearchMovieState, SearchMovieEvent, SearchMovieEffect>(SearchMovieState.Start()) {
 
+    private var lastQueriedMovieTitle: String? = null
+
     override fun onEvent(event: SearchMovieEvent) {
         when (event) {
             is SearchMovieEvent.Search -> searchMovie(event.movieTitle)
@@ -24,6 +26,12 @@ class SearchMovieViewModel @Inject constructor(private val repository: SubtitleR
     }
 
     private fun searchMovie(movieTitle: String) {
+
+        if (movieTitle == lastQueriedMovieTitle)
+            return
+
+        lastQueriedMovieTitle = movieTitle
+
         viewModelScope.launch(Dispatchers.IO) {
             ensureActive()
             emitLoadingState()
