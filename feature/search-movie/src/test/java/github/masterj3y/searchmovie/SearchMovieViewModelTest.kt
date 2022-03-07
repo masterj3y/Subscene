@@ -1,7 +1,7 @@
 package github.masterj3y.searchmovie
 
 import github.masterj3y.searchmovie.mockdata.MockData
-import github.masterj3y.subscene.data.SubtitleRepository
+import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.testutils.coroutine.CoroutinesTestRule
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe

@@ -1,6 +1,6 @@
 package github.masterj3y.searchmovie
 
-import github.masterj3y.subscene.model.SearchMovieResultItem
+import github.masterj3y.subscenecommon.model.SearchMovieResultItem
 
 sealed class SearchMovieState {
 

@@ -3,8 +3,8 @@ package github.masterj3y.searchmovie
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.masterj3y.mvi.BaseViewModel
-import github.masterj3y.subscene.data.SubtitleRepository
-import github.masterj3y.subscene.model.SearchMovieResultItem
+import github.masterj3y.subscenecommon.data.SubtitleRepository
+import github.masterj3y.subscenecommon.model.SearchMovieResultItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.flow.catch

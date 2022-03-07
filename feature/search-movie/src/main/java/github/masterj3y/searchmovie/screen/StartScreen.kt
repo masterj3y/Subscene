@@ -12,7 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import github.masterj3y.subscene.model.SearchMovieResultItem
+import github.masterj3y.subscenecommon.model.SearchMovieResultItem
 
 @Composable
 internal fun StartScreen(
