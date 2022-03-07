@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Subscene</string>
+    <string name="movie_subtitle_count">subtitles: %1$d</string>
 </resources>

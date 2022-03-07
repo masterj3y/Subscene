@@ -11,7 +11,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import github.masterj3y.resources.R
 import github.masterj3y.searchmovie.model.MovieItem
 
 @Composable
@@ -64,6 +66,6 @@ private fun MovieItem(movie: MovieItem, onClick: (MovieItem) -> Unit) {
     ) {
 
         Text(text = movie.title, style = MaterialTheme.typography.h6)
-        Text(text = movie.subtitles.toString())
+        Text(text = stringResource(id = R.string.movie_subtitle_count, movie.subtitles))
     }
 }
