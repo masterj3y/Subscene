@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">Subscene</string>
     <string name="movie_subtitle_count">subtitles: %1$d</string>
+    <string name="error_text">An error has occurred</string>
+    <string name="retry">Retry</string>
+    <string name="search_movie_input_placeholder">Movie title …</string>
 </resources>

@@ -6,6 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import github.masterj3y.mvi.BaseViewModel
 import github.masterj3y.searchmovie.model.MovieItem
 import github.masterj3y.searchmovie.model.mapToMovieItem
+import github.masterj3y.searchmovie.ui.SearchMovieEffect
+import github.masterj3y.searchmovie.ui.SearchMovieEvent
+import github.masterj3y.searchmovie.ui.SearchMovieState
 import github.masterj3y.subscenecommon.data.SubtitleRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ensureActive
@@ -15,14 +18,13 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchMovieViewModel @Inject constructor(private val repository: SubtitleRepository) :
-    BaseViewModel<SearchMovieState, SearchMovieEvent, SearchMovieEffect>(SearchMovieState.Start()) {
+    BaseViewModel<SearchMovieState, SearchMovieEvent, SearchMovieEffect>(SearchMovieState.Result()) {
 
     private var lastQueriedMovieTitle: String? = null
 
     override fun onEvent(event: SearchMovieEvent) {
         when (event) {
             is SearchMovieEvent.Search -> searchMovie(event.movieTitle)
-            is SearchMovieEvent.Reset -> reset()
         }
     }
 
@@ -56,16 +58,10 @@ class SearchMovieViewModel @Inject constructor(private val repository: SubtitleR
         }
     }
 
-    private fun reset() = emitState(SearchMovieState.Start())
-
-    private fun emitLoadingState() = getCurrentState<SearchMovieState.Start>()
-        ?.copy(isLoading = true)
-        ?.let(::emitState)
+    private fun emitLoadingState() = emitState(SearchMovieState.Loading)
 
     private fun emitResultState(result: List<MovieItem>) =
-        getCurrentState<SearchMovieState.Start>()
-            ?.copy(isLoading = false, movies = result.toMutableStateList())
-            ?.let(::emitState)
+        emitState(SearchMovieState.Result(movies = result.toMutableStateList()))
 
     private fun emitErrorState() = emitState(SearchMovieState.Error)
 }

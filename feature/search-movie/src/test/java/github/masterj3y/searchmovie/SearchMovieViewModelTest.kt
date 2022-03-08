@@ -1,10 +1,10 @@
 package github.masterj3y.searchmovie
 
 import github.masterj3y.searchmovie.mockdata.MockData
+import github.masterj3y.searchmovie.ui.SearchMovieEvent
+import github.masterj3y.searchmovie.ui.SearchMovieState
 import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.testutils.coroutine.CoroutinesTestRule
-import io.kotest.matchers.shouldBe
-import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.runTest

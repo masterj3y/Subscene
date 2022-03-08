@@ -1,4 +1,4 @@
-package github.masterj3y.searchmovie
+package github.masterj3y.searchmovie.ui
 
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.snapshots.SnapshotStateList
@@ -6,8 +6,9 @@ import github.masterj3y.searchmovie.model.MovieItem
 
 sealed class SearchMovieState {
 
-    data class Start(
-        val isLoading: Boolean = false,
+    object Loading : SearchMovieState()
+
+    data class Result(
         val movies: SnapshotStateList<MovieItem> = mutableStateListOf()
     ) : SearchMovieState()
 
@@ -17,7 +18,6 @@ sealed class SearchMovieState {
 sealed class SearchMovieEvent {
 
     class Search(val movieTitle: String) : SearchMovieEvent()
-    object Reset : SearchMovieEvent()
 }
 
 sealed class SearchMovieEffect
