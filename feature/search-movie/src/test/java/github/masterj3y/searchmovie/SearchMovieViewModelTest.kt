@@ -5,6 +5,8 @@ import github.masterj3y.searchmovie.ui.SearchMovieEvent
 import github.masterj3y.searchmovie.ui.SearchMovieState
 import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.testutils.coroutine.CoroutinesTestRule
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.runTest
@@ -34,12 +36,12 @@ class SearchMovieViewModelTest {
 
         val result = viewModel.state
             .filter {
-                it is SearchMovieState.Start
+                it is SearchMovieState.Result
             }
             .map {
-                it as SearchMovieState.Start
+                it as SearchMovieState.Result
             }
-            .take(3)
+            .take(2)
             .last()
 
         result shouldNotBe null
