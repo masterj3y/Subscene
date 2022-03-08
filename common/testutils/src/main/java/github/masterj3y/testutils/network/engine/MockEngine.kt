@@ -11,9 +11,16 @@ val mockEngine = MockEngine { request ->
 
     val resourceReader = ResourceReader()
 
+    request.url.fullPath.let(::println)
+
     when {
         request.url.fullPath.contains("subtitles/searchbytitle") -> respond(
             content = resourceReader.readApiResponse("search-movie-response"),
+            status = HttpStatusCode.OK,
+            headers = headersOf(HttpHeaders.ContentType, "application/json")
+        )
+        request.url.fullPath.contains("subtitles/") -> respond(
+            content = resourceReader.readApiResponse("subtitle-items-response"),
             status = HttpStatusCode.OK,
             headers = headersOf(HttpHeaders.ContentType, "application/json")
         )

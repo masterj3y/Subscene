@@ -12,6 +12,8 @@ import javax.inject.Inject
 interface SubtitleDataSource {
 
     fun searchMovie(title: String): Flow<String?>
+
+    fun getMovieSubtitles(movieUrl: String): Flow<String?>
 }
 
 class SubtitleDataSourceImpl
@@ -24,6 +26,12 @@ constructor(private val httpClient: HttpClient) : SubtitleDataSource {
             contentType(ContentType.Application.Json)
             body = SearchMovieRequestBody(query = title)
         }
+
+        emit(response)
+    }
+
+    override fun getMovieSubtitles(movieUrl: String): Flow<String?> = flow {
+        val response: String? = httpClient.get("${BASE_URL}subtitles/$movieUrl")
 
         emit(response)
     }

@@ -22,4 +22,15 @@ class SubtitleDataSourceTest {
                 it shouldNotBe null
             }
     }
+
+    @Test
+    fun `get movie subtitles`() = runBlocking {
+        subtitleDataSource.getMovieSubtitles("some/url")
+            .onCompletion {
+                it shouldBe null
+            }
+            .collect {
+                it shouldNotBe null
+            }
+    }
 }
