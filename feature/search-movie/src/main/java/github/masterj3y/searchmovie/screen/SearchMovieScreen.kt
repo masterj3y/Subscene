@@ -37,7 +37,7 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
                 isLoading = startState?.isLoading ?: false,
                 movieTitle = movieTitle,
                 onMovieTitleChange = { movieTitle = it },
-                movies = startState?.movies ?: listOf(),
+                movies = startState?.movies ?: remember { mutableStateListOf() },
                 onMovieClick = {}
             )
         }

@@ -9,6 +9,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,7 +22,7 @@ internal fun StartScreen(
     isLoading: Boolean,
     movieTitle: String,
     onMovieTitleChange: (String) -> Unit,
-    movies: List<MovieItem>,
+    movies: SnapshotStateList<MovieItem>,
     onMovieClick: (MovieItem) -> Unit
 ) {
 
@@ -45,7 +46,7 @@ internal fun StartScreen(
 
 @Composable
 private fun ResultScreen(
-    movies: List<MovieItem>,
+    movies: SnapshotStateList<MovieItem>,
     onMovieClick: (MovieItem) -> Unit
 ) {
 
