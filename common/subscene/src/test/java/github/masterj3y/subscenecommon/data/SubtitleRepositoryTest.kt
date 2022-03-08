@@ -1,7 +1,7 @@
 package github.masterj3y.subscenecommon.data
 
 import github.masterj3y.subscenecommon.extractor.Extractor
-import github.masterj3y.subscenecommon.extractor.movie.MovieExtractor
+import github.masterj3y.subscenecommon.extractor.movie.SearchMovieResultExtractor
 import github.masterj3y.subscenecommon.model.SearchMovieResultItem
 import github.masterj3y.testutils.network.engine.mockHttpClient
 import io.kotest.matchers.shouldBe
@@ -15,7 +15,8 @@ class SubtitleRepositoryTest : TestCase() {
 
     private val subtitleDataSource: SubtitleDataSource =
         SubtitleDataSourceImpl(mockHttpClient)
-    private val movieExtractor: Extractor<List<SearchMovieResultItem>?> = MovieExtractor()
+    private val movieExtractor: Extractor<List<SearchMovieResultItem>?> =
+        SearchMovieResultExtractor()
     private val subtitleRepository: SubtitleRepository = SubtitleRepositoryImpl(
         subtitleDataSource = subtitleDataSource,
         movieExtractor = movieExtractor
