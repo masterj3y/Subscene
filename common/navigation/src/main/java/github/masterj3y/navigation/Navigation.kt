@@ -24,4 +24,13 @@ fun Navigation(navController: NavHostController, builder: NavGraphBuilder.() -> 
 sealed class Route(val route: String) {
 
     object SearchMovie : Route("search-movie")
+
+    object Subtitles : Route("subtitles") {
+
+        const val ARG_MOVIE_PATH = "movie-path"
+
+        fun navigate(navController: NavHostController, moviePath: String) {
+            navController.navigate("$route/$moviePath")
+        }
+    }
 }
