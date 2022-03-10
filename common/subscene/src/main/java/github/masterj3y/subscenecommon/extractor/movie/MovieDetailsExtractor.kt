@@ -40,7 +40,7 @@ class MovieDetailsExtractor : Extractor<MovieDetailsModel?> {
         return if (poster != null && title != null && imdb != null && year != null)
             MovieDetailsModel(
                 poster = poster,
-                title = title,
+                title = title.trim(),
                 imdb = imdb,
                 year = year,
                 subtitlePreviewList = listOf()
