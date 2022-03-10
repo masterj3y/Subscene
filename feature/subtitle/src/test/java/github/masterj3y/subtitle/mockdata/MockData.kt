@@ -1,24 +1,31 @@
 package github.masterj3y.subtitle.mockdata
 
-import github.masterj3y.subscenecommon.model.SubtitleItem
+import github.masterj3y.subscenecommon.model.MovieDetailsModel
+import github.masterj3y.subscenecommon.model.SubtitlePreviewModel
 
 object MockData {
 
-    val mockSubtitlesResult: List<SubtitleItem>
-        get() = listOf(
-            SubtitleItem(
-                language = "persian",
-                name = "Fight Club",
-                url = "some url",
-                owner = "mj",
-                comment = "some comment"
-            ),
-            SubtitleItem(
-                language = "persian 2",
-                name = "Fight Club 2",
-                url = "some url 2",
-                owner = "mj 2",
-                comment = "some comment 2"
+    val mockSubtitlesResult: MovieDetailsModel
+        get() = MovieDetailsModel(
+            poster = "some link",
+            title = "some title",
+            year = "year",
+            imdb = "imdb link",
+            subtitlePreviewList = listOf(
+                SubtitlePreviewModel(
+                    language = "persian",
+                    name = "Fight Club",
+                    url = "some url",
+                    owner = "mj",
+                    comment = "some comment"
+                ),
+                SubtitlePreviewModel(
+                    language = "persian 2",
+                    name = "Fight Club 2",
+                    url = "some url 2",
+                    owner = "mj 2",
+                    comment = "some comment 2"
+                )
             )
         )
 }

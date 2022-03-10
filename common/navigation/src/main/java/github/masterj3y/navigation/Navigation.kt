@@ -25,7 +25,7 @@ sealed class Route(val route: String) {
 
     object SearchMovie : Route("search-movie")
 
-    object Subtitles : Route("subtitles") {
+    object MovieDetails : Route("subtitles") {
 
         const val ARG_MOVIE_PATH = "movie-path"
 

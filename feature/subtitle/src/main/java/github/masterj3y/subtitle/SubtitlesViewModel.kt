@@ -1,32 +1,31 @@
 package github.masterj3y.subtitle
 
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.masterj3y.mvi.BaseViewModel
 import github.masterj3y.subscenecommon.data.SubtitleRepository
-import github.masterj3y.subtitle.model.Subtitle
-import github.masterj3y.subtitle.model.mapToSubtitle
-import github.masterj3y.subtitle.ui.SubtitlesEffect
-import github.masterj3y.subtitle.ui.SubtitlesEvent
-import github.masterj3y.subtitle.ui.SubtitlesState
+import github.masterj3y.subtitle.model.MovieDetails
+import github.masterj3y.subtitle.model.toMovieDetails
+import github.masterj3y.subtitle.ui.MovieDetailsEffect
+import github.masterj3y.subtitle.ui.MovieDetailsEvent
+import github.masterj3y.subtitle.ui.MovieDetailsState
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SubtitlesViewModel @Inject constructor(private val repository: SubtitleRepository) :
-    BaseViewModel<SubtitlesState, SubtitlesEvent, SubtitlesEffect>(SubtitlesState.Loading) {
+    BaseViewModel<MovieDetailsState, MovieDetailsEvent, MovieDetailsEffect>(MovieDetailsState.Loading) {
 
-    override fun onEvent(event: SubtitlesEvent) {
+    override fun onEvent(event: MovieDetailsEvent) {
         when (event) {
-            is SubtitlesEvent.Load -> loadSubtitles(event.moviePath)
+            is MovieDetailsEvent.Load -> loadMovieDetails(event.moviePath)
         }
     }
 
-    private fun loadSubtitles(moviePath: String) {
+    private fun loadMovieDetails(moviePath: String) {
         viewModelScope.launch {
-            repository.getMovieSubtitles(moviePath)
+            repository.getMovieDetails(moviePath)
                 .onCompletion {
                     if (it != null) emitErrorState()
                 }
@@ -38,7 +37,7 @@ class SubtitlesViewModel @Inject constructor(private val repository: SubtitleRep
                 }
                 .filterNotNull()
                 .map {
-                    it.mapToSubtitle()
+                    it.toMovieDetails()
                 }
                 .collect {
                     emitResultState(it)
@@ -46,10 +45,8 @@ class SubtitlesViewModel @Inject constructor(private val repository: SubtitleRep
         }
     }
 
-    private fun emitLoadingState() = emitState(SubtitlesState.Loading)
+    private fun emitResultState(result: MovieDetails) =
+        emitState(MovieDetailsState.Result(movieDetails = result))
 
-    private fun emitResultState(result: List<Subtitle>) =
-        emitState(SubtitlesState.Result(subtitles = result.toMutableStateList()))
-
-    private fun emitErrorState() = emitState(SubtitlesState.Error)
+    private fun emitErrorState() = emitState(MovieDetailsState.Error)
 }

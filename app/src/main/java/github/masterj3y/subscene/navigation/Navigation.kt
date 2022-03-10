@@ -8,7 +8,7 @@ import androidx.navigation.navArgument
 import github.masterj3y.navigation.Navigation
 import github.masterj3y.navigation.Route
 import github.masterj3y.searchmovie.ui.SearchMovieScreen
-import github.masterj3y.subtitle.ui.SubtitlesScreen
+import github.masterj3y.subtitle.ui.MovieDetails
 
 @Composable
 internal fun MainNavigation(
@@ -20,19 +20,19 @@ internal fun MainNavigation(
         composable(Route.SearchMovie.route) { SearchMovieScreen() }
 
         composable(
-            route = "${Route.Subtitles.route}/{${Route.Subtitles.ARG_MOVIE_PATH}}",
+            route = "${Route.MovieDetails.route}/{${Route.MovieDetails.ARG_MOVIE_PATH}}",
             arguments = listOf(
-                navArgument(name = Route.Subtitles.ARG_MOVIE_PATH) {
+                navArgument(name = Route.MovieDetails.ARG_MOVIE_PATH) {
                     type = NavType.StringType
                 }
             )
         ) {
-            SubtitlesScreen(
+            MovieDetails(
                 moviePath =
                 navController
                     .currentBackStackEntry
                     ?.arguments
-                    ?.getString(Route.Subtitles.ARG_MOVIE_PATH)
+                    ?.getString(Route.MovieDetails.ARG_MOVIE_PATH)
             )
         }
     }

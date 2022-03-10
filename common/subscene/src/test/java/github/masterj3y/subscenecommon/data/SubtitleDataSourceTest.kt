@@ -24,8 +24,8 @@ class SubtitleDataSourceTest {
     }
 
     @Test
-    fun `get movie subtitles`() = runBlocking {
-        subtitleDataSource.getMovieSubtitles("some/url")
+    fun `get movie details`() = runBlocking {
+        subtitleDataSource.getMovieDetails("some/url")
             .onCompletion {
                 it shouldBe null
             }

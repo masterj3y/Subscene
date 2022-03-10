@@ -1,6 +1,6 @@
 package github.masterj3y.subscenecommon.model
 
-data class SubtitleItem(
+data class SubtitlePreviewModel(
     val language: String,
     val name: String,
     val url: String,

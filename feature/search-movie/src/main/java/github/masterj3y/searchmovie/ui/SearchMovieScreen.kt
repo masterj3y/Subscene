@@ -74,7 +74,7 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
                         movies = resultState?.movies ?: remember { mutableStateListOf() },
                         onMovieClick = { movieItem ->
                             val moviePath = movieItem.url.substringAfterLast("/")
-                            Route.Subtitles.navigate(
+                            Route.MovieDetails.navigate(
                                 navController = navController,
                                 moviePath = moviePath
                             )

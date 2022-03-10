@@ -7,8 +7,8 @@ import dagger.hilt.components.SingletonComponent
 import github.masterj3y.subscenecommon.data.SubtitleDataSourceImpl
 import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.subscenecommon.data.SubtitleRepositoryImpl
+import github.masterj3y.subscenecommon.extractor.movie.MovieDetailsExtractor
 import github.masterj3y.subscenecommon.extractor.movie.SearchMovieResultExtractor
-import github.masterj3y.subscenecommon.extractor.subtitle.SubtitleItemsExtractor
 import io.ktor.client.*
 import javax.inject.Singleton
 
@@ -22,6 +22,6 @@ object SubsceneModule {
         SubtitleRepositoryImpl(
             subtitleDataSource = SubtitleDataSourceImpl(httpClient),
             movieExtractor = SearchMovieResultExtractor(),
-            subtitleExtractor = SubtitleItemsExtractor()
+            subtitleExtractor = MovieDetailsExtractor()
         )
 }

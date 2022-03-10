@@ -1,6 +1,9 @@
 package github.masterj3y.subtitle.model
 
-data class Subtitle(
+import javax.annotation.concurrent.Immutable
+
+@Immutable
+data class SubtitlePreview(
     val language: String,
     val name: String,
     val url: String,

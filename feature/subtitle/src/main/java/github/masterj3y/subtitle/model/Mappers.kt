@@ -1,13 +1,26 @@
 package github.masterj3y.subtitle.model
 
-import github.masterj3y.subscenecommon.model.SubtitleItem
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
+import github.masterj3y.subscenecommon.model.MovieDetailsModel
+import github.masterj3y.subscenecommon.model.SubtitlePreviewModel
 
-internal fun List<SubtitleItem>.mapToSubtitle(): List<Subtitle> = map {
-    Subtitle(
-        language = it.language,
-        name = it.name,
-        url = it.url,
-        owner = it.owner,
-        comment = it.comment
+internal fun MovieDetailsModel.toMovieDetails(): MovieDetails =
+    MovieDetails(
+        poster = poster,
+        title = title,
+        year = year,
+        imdb = imdb,
+        subtitlePreviewList = subtitlePreviewList.mapToSubtitlePreview()
     )
-}
+
+internal fun List<SubtitlePreviewModel>.mapToSubtitlePreview(): SnapshotStateList<SubtitlePreview> =
+    map {
+        SubtitlePreview(
+            language = it.language,
+            name = it.name,
+            url = it.url,
+            owner = it.owner,
+            comment = it.comment
+        )
+    }.toMutableStateList()

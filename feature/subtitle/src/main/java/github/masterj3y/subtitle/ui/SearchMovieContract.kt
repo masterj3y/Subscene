@@ -1,23 +1,19 @@
 package github.masterj3y.subtitle.ui
 
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import github.masterj3y.subtitle.model.Subtitle
+import github.masterj3y.subtitle.model.MovieDetails
 
-sealed class SubtitlesState {
+sealed class MovieDetailsState {
 
-    object Loading : SubtitlesState()
+    object Loading : MovieDetailsState()
 
-    data class Result(
-        val subtitles: SnapshotStateList<Subtitle> = mutableStateListOf()
-    ) : SubtitlesState()
+    data class Result(val movieDetails: MovieDetails) : MovieDetailsState()
 
-    object Error : SubtitlesState()
+    object Error : MovieDetailsState()
 }
 
-sealed class SubtitlesEvent {
+sealed class MovieDetailsEvent {
 
-    class Load(val moviePath: String) : SubtitlesEvent()
+    class Load(val moviePath: String) : MovieDetailsEvent()
 }
 
-sealed class SubtitlesEffect
+sealed class MovieDetailsEffect

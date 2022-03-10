@@ -1,10 +1,10 @@
 package github.masterj3y.subscenecommon.data
 
 import github.masterj3y.subscenecommon.extractor.Extractor
+import github.masterj3y.subscenecommon.extractor.movie.MovieDetailsExtractor
 import github.masterj3y.subscenecommon.extractor.movie.SearchMovieResultExtractor
-import github.masterj3y.subscenecommon.extractor.subtitle.SubtitleItemsExtractor
+import github.masterj3y.subscenecommon.model.MovieDetailsModel
 import github.masterj3y.subscenecommon.model.SearchMovieResultItem
-import github.masterj3y.subscenecommon.model.SubtitleItem
 import github.masterj3y.testutils.network.engine.mockHttpClient
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -19,8 +19,8 @@ class SubtitleRepositoryTest : TestCase() {
         SubtitleDataSourceImpl(mockHttpClient)
     private val movieExtractor: Extractor<List<SearchMovieResultItem>?> =
         SearchMovieResultExtractor()
-    private val subtitleExtractor: Extractor<List<SubtitleItem>?> =
-        SubtitleItemsExtractor()
+    private val subtitleExtractor: Extractor<MovieDetailsModel?> =
+        MovieDetailsExtractor()
     private val subtitleRepository: SubtitleRepository = SubtitleRepositoryImpl(
         subtitleDataSource = subtitleDataSource,
         movieExtractor = movieExtractor,
@@ -39,8 +39,8 @@ class SubtitleRepositoryTest : TestCase() {
     }
 
     @Test
-    fun testGetMovieSubtitles(): Unit = runBlocking {
-        subtitleRepository.getMovieSubtitles("some/url")
+    fun testGetMovieDetails(): Unit = runBlocking {
+        subtitleRepository.getMovieDetails("some/url")
             .onCompletion {
                 it shouldBe null
             }

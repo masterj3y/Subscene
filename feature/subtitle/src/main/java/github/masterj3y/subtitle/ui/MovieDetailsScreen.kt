@@ -8,7 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import github.masterj3y.subtitle.SubtitlesViewModel
 
 @Composable
-fun SubtitlesScreen(
+fun MovieDetails(
     moviePath: String?,
     viewModel: SubtitlesViewModel = hiltViewModel()
 ) {
@@ -16,17 +16,18 @@ fun SubtitlesScreen(
     val state by viewModel.state.collectAsState()
 
     val onEvent = remember {
-        { event: SubtitlesEvent -> viewModel.onEvent(event) }
+        { event: MovieDetailsEvent -> viewModel.onEvent(event) }
     }
 
     LaunchedEffect(Unit) {
         if (!moviePath.isNullOrBlank())
-            onEvent(SubtitlesEvent.Load(moviePath))
+            onEvent(MovieDetailsEvent.Load(moviePath))
     }
 
     when (state) {
-        is SubtitlesState.Result -> {
-            val subtitles = (state as? SubtitlesState.Result)?.subtitles ?: listOf()
+        is MovieDetailsState.Result -> {
+            val subtitles = (state as? MovieDetailsState.Result)?.movieDetails?.subtitlePreviewList
+                ?: remember { mutableStateListOf() }
             LazyColumn {
                 items(subtitles) {
                     Text(text = it.toString())

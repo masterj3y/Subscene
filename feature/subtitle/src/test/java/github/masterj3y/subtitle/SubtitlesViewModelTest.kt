@@ -2,8 +2,8 @@ package github.masterj3y.subtitle
 
 import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.subtitle.mockdata.MockData
-import github.masterj3y.subtitle.ui.SubtitlesEvent
-import github.masterj3y.subtitle.ui.SubtitlesState
+import github.masterj3y.subtitle.ui.MovieDetailsEvent
+import github.masterj3y.subtitle.ui.MovieDetailsState
 import github.masterj3y.testutils.coroutine.CoroutinesTestRule
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -29,24 +29,24 @@ class SubtitlesViewModelTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `test load subtitles event`() = runTest {
+    fun `test load movie details event`() = runTest {
 
         val mockData = MockData.mockSubtitlesResult
 
-        whenever(repository.getMovieSubtitles("fight club")).thenReturn(flowOf(mockData))
+        whenever(repository.getMovieDetails("fight club")).thenReturn(flowOf(mockData))
 
-        viewModel.onEvent(SubtitlesEvent.Load("fight club"))
+        viewModel.onEvent(MovieDetailsEvent.Load("fight club"))
 
         val result = viewModel.state
             .filter {
-                it is SubtitlesState.Result
+                it is MovieDetailsState.Result
             }
             .map {
-                it as SubtitlesState.Result
+                it as MovieDetailsState.Result
             }
             .first()
 
         result shouldNotBe null
-        result.subtitles.size shouldBe 2
+        result.movieDetails.subtitlePreviewList.size shouldBe 2
     }
 }
