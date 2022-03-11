@@ -19,13 +19,18 @@ val mockEngine = MockEngine { request ->
             status = HttpStatusCode.OK,
             headers = headersOf(HttpHeaders.ContentType, "application/json")
         )
-        request.url.fullPath.contains("subtitles/") -> respond(
+        request.url.fullPath.matches("/?subtitles/([\\d\\w-_]+)".toRegex()) -> respond(
             content = resourceReader.readApiResponse("subtitle-items-response"),
             status = HttpStatusCode.OK,
             headers = headersOf(HttpHeaders.ContentType, "application/json")
         )
+        request.url.fullPath.matches("/?subtitles/([\\d\\w-_]+)/([\\d\\w-_]+)/\\d+".toRegex()) -> respond(
+            content = resourceReader.readApiResponse("download-subtitle-response"),
+            status = HttpStatusCode.OK,
+            headers = headersOf(HttpHeaders.ContentType, "application/json")
+        )
         else -> respond(
-            content = """ok""",
+            content = """default""",
             status = HttpStatusCode.OK,
             headers = headersOf(HttpHeaders.ContentType, "application/json")
         )

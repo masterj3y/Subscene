@@ -1,7 +1,8 @@
-package github.masterj3y.subtitle.ui
+package github.masterj3y.subtitle.ui.details
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
@@ -34,14 +35,25 @@ import github.masterj3y.resources.R
 import github.masterj3y.subtitle.SubtitlesViewModel
 import github.masterj3y.subtitle.model.MovieDetails
 import github.masterj3y.subtitle.model.SubtitlePreview
+import github.masterj3y.subtitle.ui.download.DownloadSubtitleScreen
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MovieDetails(
     moviePath: String?,
     viewModel: SubtitlesViewModel = hiltViewModel()
 ) {
 
+    val scope = rememberCoroutineScope()
+
     val state by viewModel.state.collectAsState()
+
+    val scaffoldState = rememberBottomSheetScaffoldState()
+
+    val (subtitlePreview, showDownloadBottomSheet) = remember {
+        mutableStateOf<SubtitlePreview?>(null)
+    }
 
     val onEvent = remember {
         { event: MovieDetailsEvent -> viewModel.onEvent(event) }
@@ -52,19 +64,38 @@ fun MovieDetails(
             onEvent(MovieDetailsEvent.Load(moviePath))
     }
 
-    when (state) {
-        is MovieDetailsState.Loading -> Loading()
-        is MovieDetailsState.Result -> {
-            val movieDetails = (state as? MovieDetailsState.Result)?.movieDetails
-            if (movieDetails == null)
-                Error()
-            else
-                Result(
-                    movieDetails = movieDetails,
-                    onSubtitlePreviewClick = {}
-                )
+    LaunchedEffect(subtitlePreview) {
+        if (subtitlePreview != null)
+            scaffoldState.bottomSheetState.expand()
+    }
+
+    BackHandler(scaffoldState.bottomSheetState.isExpanded) {
+        scope.launch { scaffoldState.bottomSheetState.collapse() }
+    }
+
+    BottomSheetScaffold(
+        scaffoldState = scaffoldState,
+        sheetPeekHeight = 0.dp,
+        sheetContent = {
+            if (subtitlePreview != null)
+                DownloadSubtitleScreen(subtitlePreview = subtitlePreview)
+        },
+        sheetShape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp)
+    ) {
+        when (state) {
+            is MovieDetailsState.Loading -> Loading()
+            is MovieDetailsState.Result -> {
+                val movieDetails = (state as? MovieDetailsState.Result)?.movieDetails
+                if (movieDetails == null)
+                    Error()
+                else
+                    Result(
+                        movieDetails = movieDetails,
+                        onSubtitlePreviewClick = showDownloadBottomSheet
+                    )
+            }
+            is MovieDetailsState.Error -> Error()
         }
-        is MovieDetailsState.Error -> Error()
     }
 }
 

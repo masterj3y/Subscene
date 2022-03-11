@@ -1,4 +1,4 @@
-package github.masterj3y.subtitle.ui
+package github.masterj3y.subtitle.ui.details
 
 import github.masterj3y.subtitle.model.MovieDetails
 

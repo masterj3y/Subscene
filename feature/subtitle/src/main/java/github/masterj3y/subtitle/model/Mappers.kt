@@ -2,6 +2,7 @@ package github.masterj3y.subtitle.model
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
+import github.masterj3y.subscenecommon.model.DownloadSubtitleModel
 import github.masterj3y.subscenecommon.model.MovieDetailsModel
 import github.masterj3y.subscenecommon.model.SubtitlePreviewModel
 
@@ -24,3 +25,7 @@ internal fun List<SubtitlePreviewModel>.mapToSubtitlePreview(): SnapshotStateLis
             comment = it.comment
         )
     }.toMutableStateList()
+
+internal fun DownloadSubtitleModel.toDownloadSubtitle(): DownloadSubtitle = DownloadSubtitle(
+    path = path
+)

@@ -2,8 +2,8 @@ package github.masterj3y.subtitle
 
 import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.subtitle.mockdata.MockData
-import github.masterj3y.subtitle.ui.MovieDetailsEvent
-import github.masterj3y.subtitle.ui.MovieDetailsState
+import github.masterj3y.subtitle.ui.details.MovieDetailsEvent
+import github.masterj3y.subtitle.ui.details.MovieDetailsState
 import github.masterj3y.testutils.coroutine.CoroutinesTestRule
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe

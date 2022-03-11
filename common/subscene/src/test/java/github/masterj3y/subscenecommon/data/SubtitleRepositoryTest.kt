@@ -1,10 +1,8 @@
 package github.masterj3y.subscenecommon.data
 
-import github.masterj3y.subscenecommon.extractor.Extractor
 import github.masterj3y.subscenecommon.extractor.movie.MovieDetailsExtractor
 import github.masterj3y.subscenecommon.extractor.movie.SearchMovieResultExtractor
-import github.masterj3y.subscenecommon.model.MovieDetailsModel
-import github.masterj3y.subscenecommon.model.SearchMovieResultItem
+import github.masterj3y.subscenecommon.extractor.subtitle.SubtitleDownloadPathExtractor
 import github.masterj3y.testutils.network.engine.mockHttpClient
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
@@ -17,14 +15,12 @@ class SubtitleRepositoryTest : TestCase() {
 
     private val subtitleDataSource: SubtitleDataSource =
         SubtitleDataSourceImpl(mockHttpClient)
-    private val movieExtractor: Extractor<List<SearchMovieResultItem>?> =
-        SearchMovieResultExtractor()
-    private val subtitleExtractor: Extractor<MovieDetailsModel?> =
-        MovieDetailsExtractor()
+
     private val subtitleRepository: SubtitleRepository = SubtitleRepositoryImpl(
         subtitleDataSource = subtitleDataSource,
-        movieExtractor = movieExtractor,
-        subtitleExtractor = subtitleExtractor
+        movieExtractor = SearchMovieResultExtractor(),
+        subtitleExtractor = MovieDetailsExtractor(),
+        subtitleDownloadPathExtractor = SubtitleDownloadPathExtractor()
     )
 
     @Test
@@ -40,12 +36,24 @@ class SubtitleRepositoryTest : TestCase() {
 
     @Test
     fun testGetMovieDetails(): Unit = runBlocking {
-        subtitleRepository.getMovieDetails("some/url")
+        subtitleRepository.getMovieDetails("the-office-us-version-seventh-season")
             .onCompletion {
                 it shouldBe null
             }
             .collect {
                 it shouldNotBe null
+            }
+    }
+
+    @Test
+    fun testDownloadSubtitlePath(): Unit = runBlocking {
+        subtitleRepository.getDownloadSubtitlePath("subtitles/friends--fifth-season/farsi_persian/368124")
+            .onCompletion {
+                it shouldBe null
+            }
+            .collect {
+                it shouldNotBe null
+                it?.path shouldNotBe ""
             }
     }
 }

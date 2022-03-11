@@ -1,5 +1,6 @@
 package github.masterj3y.subtitle.mockdata
 
+import github.masterj3y.subscenecommon.model.DownloadSubtitleModel
 import github.masterj3y.subscenecommon.model.MovieDetailsModel
 import github.masterj3y.subscenecommon.model.SubtitlePreviewModel
 
@@ -28,4 +29,7 @@ object MockData {
                 )
             )
         )
+
+    val mockDownloadSubtitleModel: DownloadSubtitleModel
+        get() = DownloadSubtitleModel(path = "some path")
 }

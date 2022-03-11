@@ -6,9 +6,9 @@ import github.masterj3y.mvi.BaseViewModel
 import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.subtitle.model.MovieDetails
 import github.masterj3y.subtitle.model.toMovieDetails
-import github.masterj3y.subtitle.ui.MovieDetailsEffect
-import github.masterj3y.subtitle.ui.MovieDetailsEvent
-import github.masterj3y.subtitle.ui.MovieDetailsState
+import github.masterj3y.subtitle.ui.details.MovieDetailsEffect
+import github.masterj3y.subtitle.ui.details.MovieDetailsEvent
+import github.masterj3y.subtitle.ui.details.MovieDetailsState
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject

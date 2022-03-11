@@ -8,7 +8,7 @@ import androidx.navigation.navArgument
 import github.masterj3y.navigation.Navigation
 import github.masterj3y.navigation.Route
 import github.masterj3y.searchmovie.ui.SearchMovieScreen
-import github.masterj3y.subtitle.ui.MovieDetails
+import github.masterj3y.subtitle.ui.details.MovieDetails
 
 @Composable
 internal fun MainNavigation(
