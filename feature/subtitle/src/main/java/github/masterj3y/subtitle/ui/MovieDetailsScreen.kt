@@ -1,5 +1,8 @@
 package github.masterj3y.subtitle.ui
 
+import android.content.Intent
+import android.net.Uri
+import androidx.annotation.DrawableRes
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -19,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -89,6 +93,7 @@ private fun Result(movieDetails: MovieDetails, onSubtitlePreviewClick: (Subtitle
             MovieDetailsHeader(
                 poster = movieDetails.poster,
                 title = movieDetails.title,
+                imdb = movieDetails.imdb,
                 year = movieDetails.year
             )
         }
@@ -114,10 +119,20 @@ private fun Result(movieDetails: MovieDetails, onSubtitlePreviewClick: (Subtitle
 private fun MovieDetailsHeader(
     poster: String,
     title: String,
+    imdb: String,
     year: String
 ) {
 
     val context = LocalContext.current
+
+    val openImdb = remember(context) {
+        { imdbUrl: String ->
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse(imdbUrl)
+            ).let(context::startActivity)
+        }
+    }
 
     Surface(color = MaterialTheme.colors.primary) {
         Row(
@@ -153,9 +168,18 @@ private fun MovieDetailsHeader(
                 )
 
                 Row {
-                    Chips(text = year, color = MaterialTheme.colors.background)
+                    Chips(
+                        icon = R.drawable.ic_baseline_date_range_24,
+                        text = year,
+                        color = MaterialTheme.colors.background
+                    )
                     Spacer(modifier = Modifier.width(4.dp))
-                    Chips(text = "IMDB", color = Color(0XFFDBA506))
+                    Chips(
+                        icon = R.drawable.ic_baseline_link_24,
+                        text = "IMDB",
+                        color = Color(0XFFDBA506),
+                        onClick = { openImdb(imdb) }
+                    )
                 }
             }
         }
@@ -167,12 +191,21 @@ fun SubtitlePreview(subtitlePreview: SubtitlePreview, onClick: (SubtitlePreview)
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
-            .clickable { onClick(subtitlePreview) },
+            .padding(horizontal = 16.dp, vertical = 4.dp),
         color = MaterialTheme.colors.primary.copy(alpha = .1f),
         shape = RoundedCornerShape(16.dp)
     ) {
-        Text(modifier = Modifier.padding(16.dp), text = subtitlePreview.name)
+        Column(
+            modifier = Modifier
+                .clickable { onClick(subtitlePreview) }
+                .padding(16.dp)
+        ) {
+            Text(text = subtitlePreview.name)
+            Spacer(modifier = Modifier.height(8.dp))
+            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                Text(text = subtitlePreview.owner, style = MaterialTheme.typography.body2)
+            }
+        }
     }
 }
 
@@ -182,8 +215,6 @@ private fun LanguageTabs(
     selectedLanguage: String,
     onClick: (String) -> Unit
 ) {
-
-    println("tabs composed")
 
     Surface(color = MaterialTheme.colors.primary) {
         Box(
@@ -244,19 +275,40 @@ private fun LanguageTab(language: String, isSelected: Boolean, onClick: (String)
 }
 
 @Composable
-private fun Chips(text: String, color: Color) {
+private fun Chips(
+    @DrawableRes icon: Int? = null,
+    text: String,
+    color: Color,
+    onClick: (() -> Unit)? = null
+) {
+
     Surface(
         color = color,
         shape = RoundedCornerShape(4.dp)
     ) {
-        Text(
+        Row(
             modifier = Modifier
+                .clickable { onClick?.invoke() }
                 .padding(horizontal = 4.dp, vertical = 2.dp),
-            text = text,
-            fontSize = 14.sp,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis
-        )
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            if (icon != null)
+                Icon(
+                    modifier = Modifier
+                        .size(20.dp)
+                        .padding(end = 4.dp),
+                    painter = painterResource(id = icon),
+                    contentDescription = null
+                )
+
+            Text(
+                text = text,
+                fontSize = 14.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
     }
 }
 
