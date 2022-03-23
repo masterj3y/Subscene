@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,7 +31,7 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
 
     val state by viewModel.state.collectAsState()
 
-    val (movieTitle, setMovieTitle) = remember { mutableStateOf("") }
+    val (movieTitle, setMovieTitle) = rememberSaveable { mutableStateOf("") }
 
     val onEvent = remember {
         { event: SearchMovieEvent -> viewModel.onEvent(event) }
