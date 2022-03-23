@@ -16,6 +16,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import github.masterj3y.navigation.LocalNavController
+import github.masterj3y.navigation.Route
 import github.masterj3y.resources.R
 import github.masterj3y.searchmovie.SearchMovieViewModel
 import github.masterj3y.searchmovie.model.MovieItem
@@ -23,6 +25,8 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
+
+    val navController = LocalNavController.current
 
     val state by viewModel.state.collectAsState()
 
@@ -68,7 +72,13 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
                     val resultState = state as? SearchMovieState.Result
                     Movies(
                         movies = resultState?.movies ?: remember { mutableStateListOf() },
-                        onMovieClick = {}
+                        onMovieClick = { movieItem ->
+                            val moviePath = movieItem.url.substringAfterLast("/")
+                            Route.MovieDetails.navigate(
+                                navController = navController,
+                                moviePath = moviePath
+                            )
+                        }
                     )
                 }
 

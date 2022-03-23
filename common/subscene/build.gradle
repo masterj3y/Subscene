@@ -34,7 +34,7 @@ android {
 
 dependencies {
 
-    implementation project(':common:network')
+    api project(':common:network')
 
     implementation "com.google.dagger:hilt-android:$dagger_version"
     kapt "com.google.dagger:hilt-android-compiler:$dagger_version"

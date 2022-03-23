@@ -20,6 +20,7 @@
             <option value="$PROJECT_DIR$/common/testutils" />
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/search-movie" />
+            <option value="$PROJECT_DIR$/feature/subtitle" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

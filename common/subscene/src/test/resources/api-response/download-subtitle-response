@@ -1,0 +1,751 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Subscene - Friends - Fifth Season Farsi/Persian hearing impaired subtitle</title>
+
+    <meta name="description" content="Farsi/Persian subtitle for Friends - Fifth Season">
+
+
+    <!--[if lt IE 9]>
+    <script src="https://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link rel="canonical" href="https://subscene.com/subtitles/friends--fifth-season/farsi_persian/368124" />
+    <link rel="search" type="application/opensearchdescription+xml" href="/opensearch.xml" title="Subscene" />
+    <link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+
+
+    <link href="/css?v=7gFkAkX5jD-dB0pnKagqvh3pZA2Yls80efqHXQ_7IIc1" rel="stylesheet"/>
+
+
+
+    <script src="/js?v=gGSGH6YeGLyiuBi8eaD9RxXpnLe9W0Fp1mILQxc5EYw1" type="text/javascript"></script>
+
+
+
+    <script type="text/javascript">
+        window.onerror = function () {
+        };
+    </script>
+
+
+
+</head>
+<body>
+
+
+<header>
+    <nav id="forum-navigation">
+        <ul>
+            <li>
+                <a href="https://forum.subscene.com/">Forums</a>
+            </li>
+
+            <li>
+                <a href="/Home/DarkTheme">Dark Theme</a>
+            </li>
+        </ul>
+    </nav>
+    <nav id="user-navigation">
+        <ul>
+            <li>
+                <a href="https://subscene.com/account/login">Login or Register</a>
+            </li>
+        </ul>
+    </nav>
+
+    <div id="logo">
+        <a href="/"><em>Subscene 3.0 </em></a>
+    </div>
+
+    <div id="search">
+        <div class="filter">
+            <ul>
+
+
+                <li>
+                    <a href="/filter/edit" title="Change search filter">Change filter</a>
+                </li>
+
+            </ul>
+
+        </div>
+
+        <form id="search-form" method="post" action="/subtitles/searchbytitle">
+
+            <input type="text" name="query" id="query" class="text" />
+
+            <input type="hidden" name="l" id="l" class="text" value="" />
+
+
+            <button type="submit">Subtitle Search</button>
+
+
+
+        </form>
+    </div>
+
+
+    <nav class="main">
+        <ul>
+            <li>
+                <a href="https://subscene.com/browse" class="" >Browse</a>
+            </li>
+            <li>
+                <a href="https://u.subscene.com/upload/friends--fifth-season" >Upload</a>
+            </li>
+        </ul>
+    </nav>
+</header>
+<div id="content" class="clearfix">
+
+    <div class="banner" style="min-height:0px">
+
+
+
+
+        <div class="banner">
+
+
+
+
+
+
+
+
+
+            <div class="size728">
+                <div class="jededplace" id="jededplace-3">
+                    <script type="text/javascript">
+                        (jededplaces = window.jededplaces || []).push(3);
+                    </script>
+                </div>
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+
+    <script type="text/javascript">
+
+
+        var model = null;
+        var downloadButtonText = "";
+        function DownloadSubtitle(downloadLink)
+        {
+            var downloading = document.getElementById('downloading');
+            var retry = document.getElementById('retry-download');
+            if(retry)
+                retry.style.display = 'none';
+
+            downloading.style.display = '';
+
+            if (downloadButtonText == "")
+                downloadButtonText = downloadLink.innerHTML;
+
+            downloadLink.innerHTML = downloadButtonText + "...";
+
+            if(model != null)
+                model.Show("True");
+
+        };
+
+        function CloseDownloading() {
+            var downloading = document.getElementById('downloading');
+            var downloadButton = document.getElementById('downloadButton');
+
+            if (downloading.style.display == '') {
+                downloading.style.display = 'none';
+                downloadButton.innerHTML = downloadButtonText;
+            }
+        };
+
+        function ToggleComments() {
+            var show = Toggle('commentsContainer');
+            CloseDownloading();
+
+            if (show != undefined)
+                Set_Cookie("ShowSubtitleComments", show ? "false" : "true");
+        };
+        function TogglePreview() {
+            var show = Toggle('preview');
+            CloseDownloading();
+
+            if (show != undefined)
+                Set_Cookie("ShowSubtitlePreview", show ? "false" : "true");
+        };
+        function ToggleDetails() {
+            var show = Toggle('details');
+            CloseDownloading();
+
+            if (show != undefined)
+                Set_Cookie("ShowSubtitleDetails", show ? "false" : "true");
+        };
+        function Toggle(name) {
+            var el = document.getElementById(name);
+
+            if (el.style.display == '')
+                el.style.display = 'none';
+            else
+                el.style.display = '';
+
+            return el.style.display;
+        };
+
+        function SubtitleViewModel()
+        {
+            this.ratingService = new ratingService("https://papi.subscene.com/");
+            var self = this;
+            self.SubtitleId = 368124;
+            self.Rating = ko.observable(10);
+            self.RatingCssName = ko.observable(null); // Not used on index page. Do not delete.
+            self.UserRating = ko.observable();
+            self.UserRatingDisplay = ko.observable('');
+            self.Show = ko.observable('False');
+
+            self.Rate = function (rating) {
+                this.ratingService.AddRating(self, rating);
+            };
+            self.Undo = function () {
+                this.ratingService.UndoRating(self);
+            };
+            self.ErrorMessage = ko.observable(null);
+        };
+
+
+
+    </script>
+
+
+
+    <div class="subtitle" itemscope itemtype="http://schema.org/Movie/Subtitle">
+
+        <div class="bread">
+
+            <a href="https://subscene.com/subtitles/friends--fifth-season" title="Farsi/Persian Friends - Fifth Season subtitles">&laquo; back to subtitle list </a>
+        </div>
+
+
+        <div class="box clearfix">
+            <div class="top right">
+
+
+                <div class="banner-ontop">
+
+
+
+
+                    <div class="banner">
+
+
+
+                        <div class="size250">
+                            <div class="jededplace" id="jededplace-7">
+                                <script type="text/javascript">
+                                    (jededplaces = window.jededplaces || []).push(7);
+                                </script>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+
+                    </div>
+
+
+                </div>
+
+                <div class="banner-ontop">
+
+
+
+
+                    <div class="banner">
+
+
+
+
+                        <div class="size250">
+                            <div class="jededplace" id="jededplace-8">
+                                <script type="text/javascript">
+                                    (jededplaces = window.jededplaces || []).push(8);
+                                </script>
+                            </div>
+                        </div>
+
+
+
+
+
+
+
+
+                    </div>
+
+
+                </div>
+            </div>
+            <div class="top left">
+
+                <div class="poster">
+                    <a href="https://i.jeded.com/i/friends--fifth-season.14450.jpg" target="_blank">
+                        <img src="https://i.jeded.com/i/friends--fifth-season.154-14450.jpg" alt="Poster" />
+                    </a>
+                </div>
+
+                <div class="header">
+                    <h1>
+                    <span itemprop="name">
+                        Friends - Fifth Season
+                    </span>
+
+                        <a target="_blank" class="imdb" href="https://www.imdb.com/title/tt0108778">Imdb</a>
+                    </h1>
+                    <ul>
+                        <li class="release">
+                            <strong>
+                                Release info:
+                            </strong>
+                            <div>
+                                friends s05 e03 UNCUT.DVDRip.XviD
+                            </div>
+                        </li>
+
+                        <li class="author">
+                            <div style="font-size:10px; padding-bottom:2px;">A commentary by </div>
+                            <a href="/u/417173">
+                                ksjvk
+
+                                <span class="rating-bar" title="Combined subtitle rating: 9">
+			<span class="good"></span>
+			<span class="good"></span>
+			<span class="good"></span>
+			<span class="good"></span>
+			<span class="good"></span>
+			<span class="good"></span>
+			<span class="good"></span>
+			<span class="good"></span>
+			<span class="good"></span>
+					<span class="neutral"></span>
+	</span>
+
+                            </a>
+                        </li>
+                        <li class="comment-wrapper">
+                            <div class="comment">
+                                کاملا هماهنگه. ترجمه من نیست تنظیمش کردم                        </div>
+                            <nav class="comment-sub">
+                                <ul>
+                                    <li>
+                                        <a href="javascript:ToggleDetails();" rel="nofollow">Subtitle details </a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:TogglePreview();" rel="nofollow">Preview</a>
+                                    </li>
+                                    <li>
+                                        <a href="https://u.subscene.com/comments/add/368124" rel="nofollow">Add comment</a>
+                                    </li>
+                                    <li>
+                                        <a href="javascript:Embed('flagSubtitleContainer','https://subscene.com/flag/0/368124');" rel="nofollow">Flag</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </li>
+                        <li class="clearfix">
+
+                            <a href="/subtitles/friends--fifth-season/farsi_persian/368124/ratings">
+                                <div class="rating positive hint hint--left" data-hint="By 7 users">
+
+                                    <span>10</span>
+                                </div>
+                            </a>
+                            <div class="download">
+
+                                <a href="/subtitles/farsi_persian-text/UhF8HBzwsSgGY4h7Jiy2v6DPb84uV_j4BPw8X1yAT4eRNP36BXEizHtwILv9G9OAJz5OSTEl9mo19fn3paS8C26bYAxifKUo5yxJuaEhKCr1eEsMGKDxO9CRCqfrDFEJ0" rel="nofollow" onclick="DownloadSubtitle(this)" id="downloadButton" class="button positive">
+                                    Download Farsi/Persian Subtitle
+
+                                    <span class="hearing-impaired" title="Hearing Impaired"></span>
+                                </a>
+
+
+
+
+                            </div>
+
+
+
+
+                            <div style="text-align:center; padding-top:4px;">
+                                <a style="font-size: 14px; font-weight:bold;" href='https://widget.watchmondo.com/home/redirectto?title=Friends+-+Fifth+Season&amp;titletype=2&amp;imdbid=0108778&amp;l=farsi_persian'>
+                                    Watch it on Netflix?
+                                    <div class="subtle" style="margin-top: 2px;">- Watchpedia -</div>
+                                </a>
+                            </div>
+
+
+                        </li>
+
+
+
+                    </ul>
+
+
+
+
+
+
+
+                </div>
+
+                <div class="details">
+
+                    <div class="window" style='display: none' id='downloading'>
+                        <div class="close">
+                            <a href="javascript:CloseDownloading();" rel="nofollow"></a>
+                        </div>
+                        <h3>
+                            Subtitle downloading...
+                        </h3>
+                        <div id="zergnet-widget-43083"></div>
+                        <script language="javascript" type="text/javascript">
+                            (function() {
+                                var zergnet = document.createElement('script');
+                                zergnet.type = 'text/javascript'; zergnet.async = true;
+                                zergnet.src = 'https://www.zergnet.com/zerg.js?id=43083';
+                                var znscr = document.getElementsByTagName('script')[0];
+                                znscr.parentNode.insertBefore(zergnet, znscr);
+                            })();
+                        </script>
+                    </div>
+
+
+                    <div class="window" style='display:none;' id='preview'>
+                        <div class="close">
+                            <a href="javascript:TogglePreview();" rel="nofollow"></a>
+                        </div>
+                        <h3>Subtitle preview:</h3>
+                        <p>
+                            1<br />00:00:00,299 --&gt; 00:00:02,899<br />shookhi  ˜&#199;&#209;&#237; &#199;&#210;<br />www.free-offline.com<br /><br />2<br />00:00:03,600 --&gt; 00:00:05,192<br />&#211;&#225;&#199;&#227;<br />&#211;&#225;&#199;&#227;<br /><br />3<br />00:00:05,760 --&gt; 00:00:08,877<br />&#227;&#228; &#221;&#237;&#200;&#237; &#200;&#230;&#221;&#237; &#229;&#211;&#202;&#227; &#230; &#228;&#207;<br />&#202;&#199; &#200;&#229; &#227;&#237; &#206;&#230;&#199;&#228; &#199;&#210; &#227;&#228; &#200;&#237;&#199;&#228; &#
+                        </p>
+                    </div>					<div class="window" style='display:none;' id='details'>
+                    <div class="close">
+                        <a href="javascript:ToggleDetails();" rel="nofollow"></a>
+                    </div>
+                    <h3>Subtitle details:</h3>
+                    <ul>
+                        <li>
+                            <strong>Online:</strong>
+                            9/27/2010 9:15 AM
+                            <strong>
+                                &nbsp;
+                            </strong>
+                        </li>
+                        <li>
+                            <strong>Hearing Impaired:</strong>
+                            Yes
+                        </li>
+                        <li>
+                            <strong>Foreign parts:</strong>
+                            No							</li>
+                        <li>
+                            <strong>Framerate:</strong>
+                            Not available
+                        </li>
+                        <li>
+                            <strong>Files:</strong>
+                            (24,381
+                            bytes)
+                        </li>
+                        <li>
+                            <strong>Production type:</strong>
+                            Not available
+                        </li>
+                        <li>
+                            <strong>Release type:</strong>
+                            Not available
+                        </li>
+
+
+                        <li>
+                            ---------------------------------------
+                        </li>
+                        <li itemprop="aggregateRating" itemscope itemtype="http://schema.org/AggregateRating">
+                            <strong>Rated:</strong>
+                            <span itemprop="ratingValue">10</span>/<span itemprop="bestRating">10</span> from
+                            <a href="/subtitles/friends--fifth-season/farsi_persian/368124/ratings" title="View Ratings">
+                                <span itemprop="ratingCount">7</span> users
+                            </a>
+                        </li>
+                        <li>
+                            <strong>Voted as Good by:</strong>
+                            7 users
+                        </li>
+                        <li>
+                            <strong>Downloads:</strong>
+                            2,606
+                        </li>
+                    </ul>
+                </div>
+
+                    <div class="videotest"></div>
+
+
+                    <div class="flagContainer" id="flagSubtitleContainer_Loading" style="display:none;">
+                        <div class="window">
+                            <h3>
+                                Loading...
+                            </h3>
+                        </div>
+                    </div>
+                    <iframe class="flagContainer" id="flagSubtitleContainer" style="display:none;"></iframe>
+
+                    <div class="jededplace" id="jededplace-27">
+                        <script type="text/javascript">
+                            (jededplaces = window.jededplaces || []).push(27);
+                        </script>
+                    </div>
+
+
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+        <div class="clearfix">
+        </div>
+
+
+
+        <div class="bottom">
+
+
+
+
+
+            <div class="banner">
+
+
+
+
+
+
+
+
+
+
+
+
+                <div class="size728">
+                    <div class="jededplace" id="jededplace-9">
+                        <script type="text/javascript">
+                            (jededplaces = window.jededplaces || []).push(9);
+                        </script>
+                    </div>
+                    <div class="jededplace" id="jededplace-17">
+                        <script type="text/javascript">
+                            (jededplaces = window.jededplaces || []).push(17);
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+
+
+        </div>
+    </div>
+
+    <div id="sidebar-left">
+
+
+
+
+        <div class="banner">
+
+
+
+
+
+
+
+
+            <div style='width:160px;'>
+                <div class="jededplace" id="jededplace-4">
+                    <script type='text/javascript'>
+                        (jededplaces = window.jededplaces || []).push(4);
+                    </script>
+                </div>
+            </div>
+
+
+
+
+        </div>
+
+
+    </div>
+
+
+
+
+    <footer>
+        <div>
+            <div class="right">
+
+
+
+            </div>
+            <div class="copyright">
+                <a href="/">
+                    2005-2022 Subscene <span class="version">(Version 4.0)</span>
+                </a>
+            </div>
+            <nav>
+                <ul>
+                    <li>
+                        <div class="twitter">
+                            <a href="https://twitter.com/subscene_com" class="twitter-follow-button">@subscene_com</a>
+                        </div>
+                    </li>
+
+                    <li>
+                        <a href="/site/legal-information">Legal Information</a>
+                    </li>
+                    <li>
+                        <a href="https://c.subscene.com">Content Verification Program</a>
+                    </li>
+                    <li>
+                        <a href="https://u.subscene.com/site/contact">Contact us</a>
+                    </li>
+                    <li>
+                        <a href="https://jeded.com">Uses Jeded.com Services</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="sustain">
+            <p>
+                <strong>The Planet is ours - where are we going!?</strong>
+            </p>
+            With the global population soaring towards <strong>9 billion people</strong> by <strong>2050</strong> current levels of <strong>meat</strong> and <strong>dairy consumption</strong> are not sustainable on our limited earth.
+            <div>
+                <nav>
+                    <ul>
+                        <li>
+                            Watch youtube:
+                        </li>
+                        <li>
+                            <a href="https://youtu.be/jqxENMKaeCU?t=20m38s">Planet Home</a>
+                        </li>
+                        <li>
+                            <a href="https://www.youtube.com/watch?v=eH1s9GCqPKo">Planet Ocean</a>
+                        </li>
+                        <li>
+                            <a href="https://www.youtube.com/watch?v=O6GimGZz6a8">Why not eat insects?</a>
+                        </li>
+                        <li>
+                            <a href="http://www.cowspiracy.com/">Cowspiracy</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+
+
+        <script>
+            (function (i, s, o, g, r, a, m) {
+                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+            })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+            ga('create', ('IUIO' + 'OAIO' + '-I3OI' + '4IOO' + 'I07I' + 'IOII' + 'I0I7' + '-OI2O').replace(/i/gi, "").replace(/o/gi, ""), 'subscene.com');
+            ga('send', 'pageview');
+
+        </script>
+        <script type="text/javascript">
+
+            //if (top.location != location) {
+            //	top.location.href = document.location.href;
+            //}
+
+
+            window.onload = function () {
+                setTimeout(function () {
+
+                    // Is anon user
+                    //
+                    if (typeof web3 !== 'undefined') {
+                        if (typeof ga !== 'undefined') {
+                            ga('send', 'event', 'Metamask', 'Yes', {'nonInteraction': 1});
+                        }
+                    }
+
+                }, 3000); // 3 seconds after page load
+            };
+
+
+            // Track ad-blocking
+
+            //window.onload = function () {
+
+            //	setTimeout(function () {
+
+            //		// Is anon user
+            //		//
+            //		if (typeof token === 'undefined') {
+            //			var ad = document.querySelector("ins.adsbygoogle");
+
+            //			if (ad && ad.innerHTML.replace(/\s/g, "").length == 0) {
+            //				if (typeof ga !== 'undefined') {
+            //					ga('send', 'event', 'Adblock', 'Yes', {'nonInteraction': 1});
+            //				}
+            //			}
+            //		}
+
+            //	}, 3000); // 3 seconds after page load
+            //};
+
+        </script>
+
+    </footer>
+
+
+
+
+
+
+
+
+    <div class="jededplace" id="jededplace-18">
+        <script type="text/javascript">
+            (jededplaces = window.jededplaces || []).push(18);
+        </script>
+    </div>
+
+    <script type="text/javascript" src="https://ads.jeded.com/user.js"></script>
+    <script type="text/javascript" src="https://ads.jeded.com/ads/1.js"></script>
+
+
+</body>
+</html>
