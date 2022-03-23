@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class DownloadSubtitleViewModel @Inject constructor(private val repository: SubtitleRepository) :
     BaseViewModel<DownloadSubtitleState, DownloadSubtitleEvent, DownloadSubtitleEffect>(
-        DownloadSubtitleState.Loading
+        DownloadSubtitleState.Content()
     ) {
 
     override fun onEvent(event: DownloadSubtitleEvent) = when (event) {
@@ -49,6 +49,9 @@ class DownloadSubtitleViewModel @Inject constructor(private val repository: Subt
                 }
                 .filterNotNull()
                 .collect {
+                    getCurrentState<DownloadSubtitleState.Content>()
+                        ?.copy(isLoadingDownloadPath = false)
+                        ?.let(::emitState)
                     emitEffect(DownloadSubtitleEffect.PathReceived(it.toDownloadSubtitle()))
                 }
         }

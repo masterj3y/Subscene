@@ -10,10 +10,7 @@ import github.masterj3y.testutils.coroutine.CoroutinesTestRule
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -52,7 +49,8 @@ class DownloadSubtitleViewModelTest {
             .map {
                 it as DownloadSubtitleState.Content
             }
-            .first()
+            .take(2)
+            .last()
 
         result shouldNotBe null
         result.subtitlePreview shouldNotBe null

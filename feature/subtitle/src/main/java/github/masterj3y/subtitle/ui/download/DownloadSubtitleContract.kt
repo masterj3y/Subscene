@@ -5,11 +5,10 @@ import github.masterj3y.subtitle.model.SubtitlePreview
 
 sealed class DownloadSubtitleState {
 
-    object Loading : DownloadSubtitleState()
-
     data class Content(
-        val subtitlePreview: SubtitlePreview,
-        val isLoadingDownloadPath: Boolean = false
+        val subtitlePreview: SubtitlePreview? = null,
+        val isLoadingDownloadPath: Boolean = false,
+        val downloadPath: String? = null
     ) : DownloadSubtitleState()
 }
 
