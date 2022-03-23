@@ -77,8 +77,14 @@ fun MovieDetails(
         scaffoldState = scaffoldState,
         sheetPeekHeight = 0.dp,
         sheetContent = {
-            if (subtitlePreview != null)
-                DownloadSubtitleScreen(subtitlePreview = subtitlePreview)
+            Box(
+                modifier = Modifier
+                    .defaultMinSize(minHeight = 1.dp)
+                    .fillMaxWidth()
+            ) {
+                if (subtitlePreview != null)
+                    DownloadSubtitleScreen(subtitlePreview = subtitlePreview)
+            }
         },
         sheetShape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp)
     ) {
