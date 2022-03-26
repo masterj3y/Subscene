@@ -4,10 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -32,6 +29,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import github.masterj3y.resources.R
+import github.masterj3y.resources.composables.SimpleTab
 import github.masterj3y.subtitle.SubtitlesViewModel
 import github.masterj3y.subtitle.model.MovieDetails
 import github.masterj3y.subtitle.model.SubtitlePreview
@@ -143,6 +141,10 @@ private fun Result(movieDetails: MovieDetails, onSubtitlePreviewClick: (Subtitle
             )
         }
 
+        item {
+            Spacer(modifier = Modifier.height(4.dp))
+        }
+
         items(subtitleGroups[subtitlesGroupKey] ?: listOf()) { item ->
             SubtitlePreview(
                 subtitlePreview = item,
@@ -175,7 +177,7 @@ private fun MovieDetailsHeader(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp),
+                .padding(horizontal = 8.dp, vertical = 16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Image(
@@ -204,7 +206,7 @@ private fun MovieDetailsHeader(
                     style = MaterialTheme.typography.h6
                 )
 
-                Row {
+                Row(modifier = Modifier.padding(top = 8.dp)) {
                     Chips(
                         icon = R.drawable.ic_baseline_date_range_24,
                         text = year,
@@ -228,7 +230,7 @@ fun SubtitlePreview(subtitlePreview: SubtitlePreview, onClick: (SubtitlePreview)
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp),
+            .padding(horizontal = 8.dp, vertical = 4.dp),
         color = MaterialTheme.colors.primary.copy(alpha = .1f),
         shape = RoundedCornerShape(16.dp)
     ) {
@@ -257,57 +259,25 @@ private fun LanguageTabs(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(vertical = 8.dp),
-            contentAlignment = Alignment.Center
+                .padding(vertical = 8.dp)
         ) {
             LazyRow {
 
                 item {
-                    Spacer(modifier = Modifier.width(16.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
                 }
 
                 items(languages) {
-                    LanguageTab(
-                        language = it,
+                    SimpleTab(
+                        text = it,
                         isSelected = it == selectedLanguage,
+                        selectedColor = MaterialTheme.colors.background,
+                        unselectedColor = MaterialTheme.colors.primary,
                         onClick = onClick
                     )
                 }
             }
         }
-    }
-}
-
-@Composable
-private fun LanguageTab(language: String, isSelected: Boolean, onClick: (String) -> Unit) {
-
-    val backgroundColor = animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colors.background else MaterialTheme.colors.primary
-    )
-
-    val borderColor = animateColorAsState(
-        targetValue = if (isSelected) MaterialTheme.colors.primary else MaterialTheme.colors.background
-    )
-
-    val shape = remember {
-        RoundedCornerShape(30.dp)
-    }
-
-    Surface(
-        modifier = Modifier.padding(end = 4.dp),
-        color = backgroundColor.value,
-        shape = shape,
-        elevation = 4.dp
-    ) {
-        Text(
-            modifier = Modifier
-                .background(color = backgroundColor.value)
-                .border(width = 1.dp, color = borderColor.value, shape = shape)
-                .clickable { onClick(language) }
-                .padding(horizontal = 16.dp, vertical = 8.dp),
-            color = contentColorFor(backgroundColor = backgroundColor.value),
-            text = language
-        )
     }
 }
 

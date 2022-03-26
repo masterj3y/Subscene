@@ -1,6 +1,5 @@
 package github.masterj3y.searchmovie
 
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.masterj3y.mvi.BaseViewModel
@@ -50,7 +49,9 @@ class SearchMovieViewModel @Inject constructor(private val repository: SubtitleR
                 }
                 .filterNotNull()
                 .map {
-                    it.mapToMovieItem()
+                    it.mapValues { values ->
+                        values.value.mapToMovieItem()
+                    }
                 }
                 .collect {
                     emitResultState(it)
@@ -60,8 +61,8 @@ class SearchMovieViewModel @Inject constructor(private val repository: SubtitleR
 
     private fun emitLoadingState() = emitState(SearchMovieState.Loading)
 
-    private fun emitResultState(result: List<MovieItem>) =
-        emitState(SearchMovieState.Result(movies = result.toMutableStateList()))
+    private fun emitResultState(result: Map<String, List<MovieItem>>?) =
+        emitState(SearchMovieState.Result(movies = result ?: mapOf()))
 
     private fun emitErrorState() = emitState(SearchMovieState.Error)
 }
