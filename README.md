@@ -10,3 +10,15 @@ As part of this effort, I created the subscene repository that uses the latest t
 - Compose Navigation
 - Coroutines
 - Dagger-Hilt
+
+### Modules
+- #### Common
+   - mvi
+   - navigation
+   - network
+   - resources
+   - subscene
+   - testutils
+- #### Features
+   - search-movie
+   - subtitle
