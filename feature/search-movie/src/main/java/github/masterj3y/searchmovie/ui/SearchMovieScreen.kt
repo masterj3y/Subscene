@@ -5,12 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -20,6 +20,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import github.masterj3y.navigation.LocalNavController
 import github.masterj3y.navigation.Route
 import github.masterj3y.resources.R
+import github.masterj3y.resources.composables.SimpleTab
 import github.masterj3y.searchmovie.SearchMovieViewModel
 import github.masterj3y.searchmovie.model.MovieItem
 import kotlinx.coroutines.delay
@@ -46,7 +47,7 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
     Scaffold(
         topBar = {
             TopAppBar {
-                Box(modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
+                Box(modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)) {
                     SearchInput(
                         placeholder = {
                             Text(text = stringResource(R.string.search_movie_input_placeholder))
@@ -71,22 +72,22 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
 
                 is SearchMovieState.Result -> {
                     val resultState = state as? SearchMovieState.Result
-                    Movies(
-                        movies = resultState?.movies ?: remember { mutableStateListOf() },
-                        onMovieClick = { movieItem ->
-                            val moviePath = movieItem.url.substringAfterLast("/")
-                            Route.MovieDetails.navigate(
-                                navController = navController,
-                                moviePath = moviePath
-                            )
-                        }
-                    )
+                    if (resultState?.movies?.isEmpty() == false)
+                        Movies(
+                            movies = resultState.movies,
+                            onMovieClick = { movieItem ->
+                                val moviePath = movieItem.url.substringAfterLast("/")
+                                Route.MovieDetails.navigate(
+                                    navController = navController,
+                                    moviePath = moviePath
+                                )
+                            }
+                        )
                 }
 
                 is SearchMovieState.Error -> Error()
             }
         }
-
 
     }
 }
@@ -94,12 +95,27 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun Movies(
-    movies: SnapshotStateList<MovieItem>,
+    movies: Map<String, List<MovieItem>>,
     onMovieClick: (MovieItem) -> Unit
 ) {
 
+    val (categoryKey, setCategoryKey) = remember {
+        mutableStateOf(movies.keys.toList().first())
+    }
+
+    val items = remember(categoryKey) {
+        mutableStateOf(movies[categoryKey])
+    }
+
     LazyColumn {
-        items(items = movies) {
+        item {
+            Tabs(
+                tabs = movies.keys,
+                selectedTab = categoryKey,
+                onClick = setCategoryKey
+            )
+        }
+        items(items = items.value ?: listOf()) {
             MovieItem(
                 movie = it,
                 onClick = onMovieClick
@@ -109,11 +125,41 @@ private fun Movies(
 }
 
 @Composable
+private fun Tabs(
+    tabs: Set<String>,
+    selectedTab: String,
+    onClick: (String) -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 8.dp)
+    ) {
+        LazyRow {
+
+            item {
+                Spacer(modifier = Modifier.width(8.dp))
+            }
+
+            items(tabs.toList()) {
+                SimpleTab(
+                    text = it,
+                    isSelected = it == selectedTab,
+                    selectedColor = MaterialTheme.colors.background,
+                    unselectedColor = MaterialTheme.colors.primary,
+                    onClick = onClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
 private fun MovieItem(movie: MovieItem, onClick: (MovieItem) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .padding(horizontal = 8.dp, vertical = 4.dp)
             .clip(RoundedCornerShape(16.dp))
             .background(color = MaterialTheme.colors.primary.copy(alpha = .1f))
             .clickable { onClick(movie) }

@@ -5,15 +5,16 @@ import github.masterj3y.subscenecommon.model.SearchMovieResultItem
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 
-class SearchMovieResultExtractor : Extractor<List<SearchMovieResultItem>?> {
+class SearchMovieResultExtractor : Extractor<Map<String, List<SearchMovieResultItem>>?> {
 
-    override fun extract(string: String?): List<SearchMovieResultItem>? = if (string != null)
-        Jsoup.parseBodyFragment(string)
-            .body()
-            .getElementsByClass("search-result")
-            .firstOrNull()
-            ?.extractSearchResult()?.values?.flatten()
-    else null
+    override fun extract(string: String?): Map<String, List<SearchMovieResultItem>>? =
+        if (string != null)
+            Jsoup.parseBodyFragment(string)
+                .body()
+                .getElementsByClass("search-result")
+                .firstOrNull()
+                ?.extractSearchResult()
+        else null
 
     private fun Element.extractSearchResult(): Map<String, List<SearchMovieResultItem>> {
         val resultHash = mutableMapOf<String, List<SearchMovieResultItem>>()

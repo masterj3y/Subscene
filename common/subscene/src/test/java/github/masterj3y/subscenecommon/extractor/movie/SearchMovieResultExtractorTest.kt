@@ -11,8 +11,10 @@ class SearchMovieResultExtractorTest : ResourceReader() {
     @Test
     fun testExtract() {
         val response = readApiResponse("search-movie-response")
-        val extractor: Extractor<List<SearchMovieResultItem>?> = SearchMovieResultExtractor()
+        val extractor: Extractor<Map<String, List<SearchMovieResultItem>>?> =
+            SearchMovieResultExtractor()
         val list = extractor.extract(response)
-        list?.size shouldBe 50
+        println(list?.values?.flatten()?.size)
+        list?.values?.flatten()?.size shouldBe 50
     }
 }
