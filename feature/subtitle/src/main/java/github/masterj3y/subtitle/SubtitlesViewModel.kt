@@ -6,6 +6,7 @@ import github.masterj3y.mvi.reducer.Reducer
 import github.masterj3y.mvi.viewmodel.BaseViewModel
 import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.subtitle.model.MovieDetails
+import github.masterj3y.subtitle.model.SubtitlePreview
 import github.masterj3y.subtitle.model.toMovieDetails
 import github.masterj3y.subtitle.ui.details.MovieDetailsEffect
 import github.masterj3y.subtitle.ui.details.MovieDetailsEvent
@@ -27,6 +28,10 @@ class SubtitlesViewModel @Inject constructor(private val repository: SubtitleRep
         reducer.sendEvent(MovieDetailsEvent.Load(moviePath))
     }
 
+    fun toggleDetailsBottomSheet(subtitlePreview: SubtitlePreview?) {
+        reducer.sendEvent(MovieDetailsEvent.ToggleDetailsBottomSheet(subtitlePreview))
+    }
+
     private inner class MovieDetailsReducer :
         Reducer<MovieDetailsState, MovieDetailsEvent, MovieDetailsEffect>(
             MovieDetailsState.initial()
@@ -35,6 +40,11 @@ class SubtitlesViewModel @Inject constructor(private val repository: SubtitleRep
         override fun reduce(currentState: MovieDetailsState, event: MovieDetailsEvent) {
             when (event) {
                 is MovieDetailsEvent.Load -> loadMovieDetails(event.moviePath)
+                is MovieDetailsEvent.ToggleDetailsBottomSheet -> setState(
+                    currentState.copy(
+                        subtitlePreviewBottomSheet = event.subtitlePreview
+                    )
+                )
             }
         }
 

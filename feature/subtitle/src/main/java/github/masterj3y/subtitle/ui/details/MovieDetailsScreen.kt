@@ -34,7 +34,6 @@ import github.masterj3y.subtitle.SubtitlesViewModel
 import github.masterj3y.subtitle.model.MovieDetails
 import github.masterj3y.subtitle.model.SubtitlePreview
 import github.masterj3y.subtitle.ui.download.DownloadSubtitleScreen
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -49,22 +48,20 @@ fun MovieDetails(
 
     val scaffoldState = rememberBottomSheetScaffoldState()
 
-    val (subtitlePreview, showDownloadBottomSheet) = remember {
-        mutableStateOf<SubtitlePreview?>(null)
-    }
-
     LaunchedEffect(Unit) {
         if (!moviePath.isNullOrBlank())
             viewModel.loadMovieDetails(moviePath)
     }
 
-    LaunchedEffect(subtitlePreview) {
-        if (subtitlePreview != null)
+    LaunchedEffect(state.subtitlePreviewBottomSheet) {
+        if (state.subtitlePreviewBottomSheet != null)
             scaffoldState.bottomSheetState.expand()
+        else
+            scaffoldState.bottomSheetState.collapse()
     }
 
     BackHandler(scaffoldState.bottomSheetState.isExpanded) {
-        scope.launch { scaffoldState.bottomSheetState.collapse() }
+        viewModel.toggleDetailsBottomSheet(null)
     }
 
     BottomSheetScaffold(
@@ -76,8 +73,8 @@ fun MovieDetails(
                     .defaultMinSize(minHeight = 1.dp)
                     .fillMaxWidth()
             ) {
-                if (subtitlePreview != null)
-                    DownloadSubtitleScreen(subtitlePreview = subtitlePreview)
+                if (state.subtitlePreviewBottomSheet != null)
+                    DownloadSubtitleScreen(subtitlePreview = state.subtitlePreviewBottomSheet!!)
             }
         },
         sheetShape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp)
@@ -91,7 +88,8 @@ fun MovieDetails(
                 else
                     Result(
                         movieDetails = movieDetails,
-                        onSubtitlePreviewClick = showDownloadBottomSheet
+                        onSubtitlePreviewClick =
+                        viewModel::toggleDetailsBottomSheet
                     )
             }
             state.hasAnErrorOccurred -> Error()
