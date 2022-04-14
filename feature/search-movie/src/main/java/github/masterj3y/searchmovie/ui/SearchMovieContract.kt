@@ -1,21 +1,29 @@
 package github.masterj3y.searchmovie.ui
 
+import github.masterj3y.mvi.base.Effect
+import github.masterj3y.mvi.base.Event
+import github.masterj3y.mvi.base.State
 import github.masterj3y.searchmovie.model.MovieItem
 
-sealed class SearchMovieState {
+data class SearchMovieState(
+    val isLoading: Boolean = false,
+    val result: Map<String, List<MovieItem>>,
+    val hasAnErrorOccurred: Boolean
+) : State {
 
-    object Loading : SearchMovieState()
+    companion object {
 
-    data class Result(
-        val movies: Map<String, List<MovieItem>> = mapOf()
-    ) : SearchMovieState()
-
-    object Error : SearchMovieState()
+        fun initial() = SearchMovieState(
+            isLoading = false,
+            result = emptyMap(),
+            hasAnErrorOccurred = false
+        )
+    }
 }
 
-sealed class SearchMovieEvent {
+sealed class SearchMovieEvent : Event {
 
     class Search(val movieTitle: String) : SearchMovieEvent()
 }
 
-sealed class SearchMovieEffect
+sealed class SearchMovieEffect : Effect

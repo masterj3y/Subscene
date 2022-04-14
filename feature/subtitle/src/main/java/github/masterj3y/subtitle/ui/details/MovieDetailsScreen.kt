@@ -34,7 +34,6 @@ import github.masterj3y.subtitle.SubtitlesViewModel
 import github.masterj3y.subtitle.model.MovieDetails
 import github.masterj3y.subtitle.model.SubtitlePreview
 import github.masterj3y.subtitle.ui.download.DownloadSubtitleScreen
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -49,26 +48,20 @@ fun MovieDetails(
 
     val scaffoldState = rememberBottomSheetScaffoldState()
 
-    val (subtitlePreview, showDownloadBottomSheet) = remember {
-        mutableStateOf<SubtitlePreview?>(null)
-    }
-
-    val onEvent = remember {
-        { event: MovieDetailsEvent -> viewModel.onEvent(event) }
-    }
-
     LaunchedEffect(Unit) {
         if (!moviePath.isNullOrBlank())
-            onEvent(MovieDetailsEvent.Load(moviePath))
+            viewModel.loadMovieDetails(moviePath)
     }
 
-    LaunchedEffect(subtitlePreview) {
-        if (subtitlePreview != null)
+    LaunchedEffect(state.subtitlePreviewBottomSheet) {
+        if (state.subtitlePreviewBottomSheet != null)
             scaffoldState.bottomSheetState.expand()
+        else
+            scaffoldState.bottomSheetState.collapse()
     }
 
     BackHandler(scaffoldState.bottomSheetState.isExpanded) {
-        scope.launch { scaffoldState.bottomSheetState.collapse() }
+        viewModel.toggleDetailsBottomSheet(null)
     }
 
     BottomSheetScaffold(
@@ -80,25 +73,26 @@ fun MovieDetails(
                     .defaultMinSize(minHeight = 1.dp)
                     .fillMaxWidth()
             ) {
-                if (subtitlePreview != null)
-                    DownloadSubtitleScreen(subtitlePreview = subtitlePreview)
+                if (state.subtitlePreviewBottomSheet != null)
+                    DownloadSubtitleScreen(subtitlePreview = state.subtitlePreviewBottomSheet!!)
             }
         },
         sheetShape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp)
     ) {
-        when (state) {
-            is MovieDetailsState.Loading -> Loading()
-            is MovieDetailsState.Result -> {
-                val movieDetails = (state as? MovieDetailsState.Result)?.movieDetails
+        when {
+            state.isLoading -> Loading()
+            !state.isLoading && !state.hasAnErrorOccurred && state.movieDetails != null -> {
+                val movieDetails = state.movieDetails
                 if (movieDetails == null)
                     Error()
                 else
                     Result(
                         movieDetails = movieDetails,
-                        onSubtitlePreviewClick = showDownloadBottomSheet
+                        onSubtitlePreviewClick =
+                        viewModel::toggleDetailsBottomSheet
                     )
             }
-            is MovieDetailsState.Error -> Error()
+            state.hasAnErrorOccurred -> Error()
         }
     }
 }

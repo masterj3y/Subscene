@@ -4,13 +4,14 @@ import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.subtitle.mockdata.MockData
 import github.masterj3y.subtitle.model.SubtitlePreview
 import github.masterj3y.subtitle.ui.download.DownloadSubtitleEffect
-import github.masterj3y.subtitle.ui.download.DownloadSubtitleEvent
-import github.masterj3y.subtitle.ui.download.DownloadSubtitleState
 import github.masterj3y.testutils.coroutine.CoroutinesTestRule
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -30,27 +31,17 @@ class DownloadSubtitleViewModelTest {
     @Test
     fun `test initializing event`() = runTest {
 
-        viewModel.onEvent(
-            DownloadSubtitleEvent.Initialize(
-                SubtitlePreview(
-                    language = "persian",
-                    name = "Fight Club",
-                    url = "some url",
-                    owner = "mj",
-                    comment = "some comment"
-                )
+        viewModel.initialise(
+            SubtitlePreview(
+                language = "persian",
+                name = "Fight Club",
+                url = "some url",
+                owner = "mj",
+                comment = "some comment"
             )
         )
 
-        val result = viewModel.state
-            .filter {
-                it is DownloadSubtitleState.Content
-            }
-            .map {
-                it as DownloadSubtitleState.Content
-            }
-            .take(2)
-            .last()
+        val result = viewModel.state.first()
 
         result shouldNotBe null
         result.subtitlePreview shouldNotBe null
@@ -64,12 +55,9 @@ class DownloadSubtitleViewModelTest {
 
         whenever(repository.getDownloadSubtitlePath("some path")).thenReturn(flowOf(mockData))
 
-        viewModel.onEvent(DownloadSubtitleEvent.GetDownloadPath("some path"))
+        viewModel.getDownloadPath("some path")
 
         val result = viewModel.effect
-            .map {
-                it.effect
-            }
             .filter {
                 it is DownloadSubtitleEffect.PathReceived
             }
