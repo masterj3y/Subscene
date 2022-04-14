@@ -6,9 +6,9 @@ import github.masterj3y.testutils.coroutine.CoroutinesTestRule
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.last
-import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -35,8 +35,10 @@ class SearchMovieViewModelTest {
         viewModel.search("hello")
 
         val result = viewModel.state
-            .take(2)
-            .last()
+            .filter {
+                it.result.isNotEmpty()
+            }
+            .first()
 
         result shouldNotBe null
         result.result.size shouldBe 2
