@@ -2,60 +2,83 @@ package github.masterj3y.subtitle
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import github.masterj3y.mvi.BaseViewModel
+import github.masterj3y.mvi.reducer.Reducer
+import github.masterj3y.mvi.viewmodel.BaseViewModel
 import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.subtitle.model.SubtitlePreview
 import github.masterj3y.subtitle.model.toDownloadSubtitle
 import github.masterj3y.subtitle.ui.download.DownloadSubtitleEffect
 import github.masterj3y.subtitle.ui.download.DownloadSubtitleEvent
 import github.masterj3y.subtitle.ui.download.DownloadSubtitleState
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.filterNotNull
-import kotlinx.coroutines.flow.onCompletion
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class DownloadSubtitleViewModel @Inject constructor(private val repository: SubtitleRepository) :
-    BaseViewModel<DownloadSubtitleState, DownloadSubtitleEvent, DownloadSubtitleEffect>(
-        DownloadSubtitleState.Content()
-    ) {
+    BaseViewModel<DownloadSubtitleState, DownloadSubtitleEffect>() {
 
-    override fun onEvent(event: DownloadSubtitleEvent) = when (event) {
-        is DownloadSubtitleEvent.Initialize -> initialize(event.subtitlePreview)
-        is DownloadSubtitleEvent.GetDownloadPath -> getDownloadPath(event.subtitlePath)
+    private val reducer = DownloadReducer()
+
+    override val state: StateFlow<DownloadSubtitleState> = reducer.state
+    override val effect: Flow<DownloadSubtitleEffect> = reducer.effect
+
+    fun initialise(subtitlePreview: SubtitlePreview) {
+        reducer.sendEvent(DownloadSubtitleEvent.Initialize(subtitlePreview))
     }
 
-    private fun initialize(subtitlePreview: SubtitlePreview) =
-        emitState(DownloadSubtitleState.Content(subtitlePreview = subtitlePreview))
+    fun getDownloadPath(url: String) {
+        reducer.sendEvent(DownloadSubtitleEvent.GetDownloadPath(url))
+    }
 
-    private fun getDownloadPath(subtitlePath: String) {
+    private inner class DownloadReducer :
+        Reducer<DownloadSubtitleState, DownloadSubtitleEvent, DownloadSubtitleEffect>(
+            DownloadSubtitleState.initial()
+        ) {
 
-        getCurrentState<DownloadSubtitleState.Content>()
-            ?.copy(isLoadingDownloadPath = true)
-            ?.let(::emitState)
-
-        viewModelScope.launch {
-            repository.getDownloadSubtitlePath(subtitlePath)
-                .onCompletion {
-                    if (it != null) emitErrorEffect()
-                }
-                .onEach {
-                    if (it == null) emitErrorEffect()
-                }
-                .catch {
-                    emitErrorEffect()
-                }
-                .filterNotNull()
-                .collect {
-                    getCurrentState<DownloadSubtitleState.Content>()
-                        ?.copy(isLoadingDownloadPath = false)
-                        ?.let(::emitState)
-                    emitEffect(DownloadSubtitleEffect.PathReceived(it.toDownloadSubtitle()))
-                }
+        override fun reduce(currentState: DownloadSubtitleState, event: DownloadSubtitleEvent) {
+            when (event) {
+                is DownloadSubtitleEvent.Initialize -> initialize(event.subtitlePreview)
+                is DownloadSubtitleEvent.GetDownloadPath -> getDownloadPath(event.subtitlePath)
+            }
         }
-    }
 
-    private fun emitErrorEffect() = emitEffect(DownloadSubtitleEffect.Error)
+        private fun initialize(subtitlePreview: SubtitlePreview) =
+            setState(
+                currentState.copy(
+                    subtitlePreview = subtitlePreview,
+                    isLoadingDownloadPath = false,
+                    downloadPath = null
+                )
+            )
+
+        private fun getDownloadPath(subtitlePath: String) {
+
+            currentState
+                .copy(isLoadingDownloadPath = true)
+                .let(::setState)
+
+            viewModelScope.launch {
+                repository.getDownloadSubtitlePath(subtitlePath)
+                    .onCompletion {
+                        if (it != null) emitErrorEffect()
+                    }
+                    .onEach {
+                        if (it == null) emitErrorEffect()
+                    }
+                    .catch {
+                        emitErrorEffect()
+                    }
+                    .filterNotNull()
+                    .collect {
+                        currentState
+                            .copy(isLoadingDownloadPath = false)
+                            .let(::setState)
+                        sendEffect(DownloadSubtitleEffect.PathReceived(it.toDownloadSubtitle()))
+                    }
+            }
+        }
+
+        private fun emitErrorEffect() = sendEffect(DownloadSubtitleEffect.Error)
+    }
 }

@@ -20,16 +20,16 @@ import github.masterj3y.subtitle.DownloadSubtitleViewModel
 import github.masterj3y.subtitle.model.SubtitlePreview
 
 @Composable
-internal fun DownloadSubtitleScreen(subtitlePreview: SubtitlePreview) {
+internal fun DownloadSubtitleScreen(
+    subtitlePreview: SubtitlePreview,
+    viewModel: DownloadSubtitleViewModel = hiltViewModel()
+) {
 
     val context = LocalContext.current
 
-    val viewModel: DownloadSubtitleViewModel = hiltViewModel()
-
     val state by viewModel.state.collectAsState()
 
-    val dynEffect by viewModel.effect.collectAsState(initial = null)
-    val effect = dynEffect?.effect
+    val effect by viewModel.effect.collectAsState(initial = null)
 
     val openDownloadPath = remember(context) {
         { path: String ->
@@ -40,28 +40,25 @@ internal fun DownloadSubtitleScreen(subtitlePreview: SubtitlePreview) {
     }
 
     LaunchedEffect(subtitlePreview) {
-        viewModel.onEvent(DownloadSubtitleEvent.Initialize(subtitlePreview))
+        viewModel.initialise(subtitlePreview)
     }
 
     LaunchedEffect(effect) {
         when (effect) {
-            is DownloadSubtitleEffect.PathReceived -> openDownloadPath(effect.downloadSubtitle.path)
+            is DownloadSubtitleEffect.PathReceived -> {
+                openDownloadPath((effect as DownloadSubtitleEffect.PathReceived).downloadSubtitle.path)
+            }
             else -> {}
         }
     }
 
-    when (state) {
-        is DownloadSubtitleState.Content -> {
-            val content = state as? DownloadSubtitleState.Content ?: return
-            Content(
-                subtitlePreview = content.subtitlePreview,
-                isDownloadingSubtitlePath = content.isLoadingDownloadPath,
-                onDownloadClick = {
-                    viewModel.onEvent(DownloadSubtitleEvent.GetDownloadPath(it.url))
-                }
-            )
+    Content(
+        subtitlePreview = state.subtitlePreview,
+        isDownloadingSubtitlePath = state.isLoadingDownloadPath,
+        onDownloadClick = {
+            viewModel.getDownloadPath(it.url)
         }
-    }
+    )
 }
 
 @Composable

@@ -2,7 +2,8 @@ package github.masterj3y.subtitle
 
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import github.masterj3y.mvi.BaseViewModel
+import github.masterj3y.mvi.reducer.Reducer
+import github.masterj3y.mvi.viewmodel.BaseViewModel
 import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.subtitle.model.MovieDetails
 import github.masterj3y.subtitle.model.toMovieDetails
@@ -15,38 +16,65 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SubtitlesViewModel @Inject constructor(private val repository: SubtitleRepository) :
-    BaseViewModel<MovieDetailsState, MovieDetailsEvent, MovieDetailsEffect>(MovieDetailsState.Loading) {
+    BaseViewModel<MovieDetailsState, MovieDetailsEffect>() {
 
-    override fun onEvent(event: MovieDetailsEvent) {
-        when (event) {
-            is MovieDetailsEvent.Load -> loadMovieDetails(event.moviePath)
-        }
+    private val reducer = MovieDetailsReducer()
+
+    override val state: StateFlow<MovieDetailsState> = reducer.state
+    override val effect: Flow<MovieDetailsEffect> = reducer.effect
+
+    fun loadMovieDetails(moviePath: String) {
+        reducer.sendEvent(MovieDetailsEvent.Load(moviePath))
     }
 
-    private fun loadMovieDetails(moviePath: String) {
-        viewModelScope.launch {
-            repository.getMovieDetails(moviePath)
-                .onCompletion {
-                    if (it != null) emitErrorState()
-                }
-                .onEach {
-                    if (it == null) emitErrorState()
-                }
-                .catch {
-                    emitErrorState()
-                }
-                .filterNotNull()
-                .map {
-                    it.toMovieDetails()
-                }
-                .collect {
-                    emitResultState(it)
-                }
+    private inner class MovieDetailsReducer :
+        Reducer<MovieDetailsState, MovieDetailsEvent, MovieDetailsEffect>(
+            MovieDetailsState.initial()
+        ) {
+
+        override fun reduce(currentState: MovieDetailsState, event: MovieDetailsEvent) {
+            when (event) {
+                is MovieDetailsEvent.Load -> loadMovieDetails(event.moviePath)
+            }
         }
+
+        private fun loadMovieDetails(moviePath: String) {
+            viewModelScope.launch {
+                repository.getMovieDetails(moviePath)
+                    .onCompletion {
+                        if (it != null) emitErrorState()
+                    }
+                    .onEach {
+                        if (it == null) emitErrorState()
+                    }
+                    .catch {
+                        emitErrorState()
+                    }
+                    .filterNotNull()
+                    .map {
+                        it.toMovieDetails()
+                    }
+                    .collect {
+                        emitResultState(it)
+                    }
+            }
+        }
+
+        private fun emitResultState(result: MovieDetails) =
+            setState(
+                currentState.copy(
+                    isLoading = false,
+                    movieDetails = result,
+                    hasAnErrorOccurred = false
+                )
+            )
+
+        private fun emitErrorState() = setState(
+            currentState.copy(
+                isLoading = false,
+                movieDetails = null,
+                hasAnErrorOccurred = true
+            )
+        )
     }
-
-    private fun emitResultState(result: MovieDetails) =
-        emitState(MovieDetailsState.Result(movieDetails = result))
-
-    private fun emitErrorState() = emitState(MovieDetailsState.Error)
 }

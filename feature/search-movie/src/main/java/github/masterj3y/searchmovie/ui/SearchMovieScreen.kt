@@ -34,14 +34,10 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
 
     val (movieTitle, setMovieTitle) = rememberSaveable { mutableStateOf("") }
 
-    val onEvent = remember {
-        { event: SearchMovieEvent -> viewModel.onEvent(event) }
-    }
-
     LaunchedEffect(movieTitle) {
         delay(700)
         if (movieTitle.isNotBlank())
-            onEvent(SearchMovieEvent.Search(movieTitle))
+            viewModel.search(movieTitle)
     }
 
     Scaffold(
@@ -62,19 +58,18 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
 
         Box(modifier = Modifier.fillMaxSize()) {
 
-            when (state) {
+            when {
 
-                is SearchMovieState.Loading -> CircularProgressIndicator(
+                state.isLoading -> CircularProgressIndicator(
                     modifier = Modifier.align(
                         Alignment.Center
                     )
                 )
 
-                is SearchMovieState.Result -> {
-                    val resultState = state as? SearchMovieState.Result
-                    if (resultState?.movies?.isEmpty() == false)
+                !state.isLoading && !state.hasAnErrorOccurred && state.result.isNotEmpty() -> {
+                    if (state.result.isNotEmpty())
                         Movies(
-                            movies = resultState.movies,
+                            movies = state.result,
                             onMovieClick = { movieItem ->
                                 val moviePath = movieItem.url.substringAfterLast("/")
                                 Route.MovieDetails.navigate(
@@ -85,7 +80,7 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
                         )
                 }
 
-                is SearchMovieState.Error -> Error()
+                state.hasAnErrorOccurred -> Error()
             }
         }
 

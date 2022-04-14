@@ -53,13 +53,9 @@ fun MovieDetails(
         mutableStateOf<SubtitlePreview?>(null)
     }
 
-    val onEvent = remember {
-        { event: MovieDetailsEvent -> viewModel.onEvent(event) }
-    }
-
     LaunchedEffect(Unit) {
         if (!moviePath.isNullOrBlank())
-            onEvent(MovieDetailsEvent.Load(moviePath))
+            viewModel.loadMovieDetails(moviePath)
     }
 
     LaunchedEffect(subtitlePreview) {
@@ -86,10 +82,10 @@ fun MovieDetails(
         },
         sheetShape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp)
     ) {
-        when (state) {
-            is MovieDetailsState.Loading -> Loading()
-            is MovieDetailsState.Result -> {
-                val movieDetails = (state as? MovieDetailsState.Result)?.movieDetails
+        when {
+            state.isLoading -> Loading()
+            !state.isLoading && !state.hasAnErrorOccurred && state.movieDetails != null -> {
+                val movieDetails = state.movieDetails
                 if (movieDetails == null)
                     Error()
                 else
@@ -98,7 +94,7 @@ fun MovieDetails(
                         onSubtitlePreviewClick = showDownloadBottomSheet
                     )
             }
-            is MovieDetailsState.Error -> Error()
+            state.hasAnErrorOccurred -> Error()
         }
     }
 }
