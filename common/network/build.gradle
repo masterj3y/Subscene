@@ -39,6 +39,8 @@ dependencies {
 
     api "io.ktor:ktor-client-android:$ktor_client_version"
     api "io.ktor:ktor-client-serialization:$ktor_client_version"
+    implementation "io.ktor:ktor-client-logging:$ktor_client_version"
+    implementation 'ch.qos.logback:logback-classic:1.2.11'
 
     testImplementation project(':common:testutils')
 }
