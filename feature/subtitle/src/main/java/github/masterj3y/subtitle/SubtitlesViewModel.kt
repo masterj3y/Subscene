@@ -49,6 +49,7 @@ class SubtitlesViewModel @Inject constructor(private val repository: SubtitleRep
         }
 
         private fun loadMovieDetails(moviePath: String) {
+            emitLoadingState()
             viewModelScope.launch {
                 repository.getMovieDetails(moviePath)
                     .onCompletion {
@@ -69,6 +70,15 @@ class SubtitlesViewModel @Inject constructor(private val repository: SubtitleRep
                     }
             }
         }
+
+        private fun emitLoadingState() = setState(
+            currentState.copy(
+                isLoading = true,
+                movieDetails = null,
+                hasAnErrorOccurred = false,
+                subtitlePreviewBottomSheet = null
+            )
+        )
 
         private fun emitResultState(result: MovieDetails) =
             setState(
