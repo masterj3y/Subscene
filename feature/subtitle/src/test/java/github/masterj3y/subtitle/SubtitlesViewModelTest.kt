@@ -5,6 +5,7 @@ import github.masterj3y.subtitle.mockdata.MockData
 import github.masterj3y.testutils.coroutine.CoroutinesTestRule
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
@@ -22,7 +23,7 @@ class SubtitlesViewModelTest {
     val coroutinesTestRule = CoroutinesTestRule()
 
     private val repository: SubtitleRepository = mock()
-    private val viewModel = SubtitlesViewModel(repository)
+    private val viewModel = SubtitlesViewModel(repository, Dispatchers.Default)
 
     @ExperimentalCoroutinesApi
     @Test

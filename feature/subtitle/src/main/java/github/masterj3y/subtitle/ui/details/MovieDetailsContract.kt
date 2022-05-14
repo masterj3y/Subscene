@@ -1,8 +1,5 @@
 package github.masterj3y.subtitle.ui.details
 
-import github.masterj3y.mvi.base.Effect
-import github.masterj3y.mvi.base.Event
-import github.masterj3y.mvi.base.State
 import github.masterj3y.subtitle.model.MovieDetails
 import github.masterj3y.subtitle.model.SubtitlePreview
 
@@ -11,7 +8,7 @@ data class MovieDetailsState(
     val movieDetails: MovieDetails?,
     val hasAnErrorOccurred: Boolean,
     val subtitlePreviewBottomSheet: SubtitlePreview?
-) : State {
+) {
 
     companion object {
 
@@ -23,11 +20,3 @@ data class MovieDetailsState(
         )
     }
 }
-
-sealed class MovieDetailsEvent : Event {
-
-    class Load(val moviePath: String) : MovieDetailsEvent()
-    class ToggleDetailsBottomSheet(val subtitlePreview: SubtitlePreview?) : MovieDetailsEvent()
-}
-
-sealed class MovieDetailsEffect : Effect

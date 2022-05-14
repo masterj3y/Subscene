@@ -32,9 +32,7 @@ android {
 
 dependencies {
 
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-    api "org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutines_version"
+    api project(':common:coroutines')
 
     api "io.kotest:kotest-assertions-core:$kotest_version"
 
