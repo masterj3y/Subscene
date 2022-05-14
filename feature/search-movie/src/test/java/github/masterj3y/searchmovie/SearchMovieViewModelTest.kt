@@ -5,6 +5,7 @@ import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.testutils.coroutine.CoroutinesTestRule
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
@@ -23,7 +24,7 @@ class SearchMovieViewModelTest {
     val coroutineTestRule = CoroutinesTestRule()
 
     private val repository: SubtitleRepository = mock()
-    private val viewModel = SearchMovieViewModel(repository)
+    private val viewModel = SearchMovieViewModel(repository, Dispatchers.Default)
 
     @Test
     fun `test search movie event`() = runTest {

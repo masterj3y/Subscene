@@ -39,8 +39,8 @@ android {
 
 dependencies {
 
+    implementation project(':common:coroutines')
     implementation project(':common:resources')
-    implementation project(':common:mvi')
     implementation project(':common:subscene')
     implementation project(':common:navigation')
 

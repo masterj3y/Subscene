@@ -4,44 +4,38 @@ import github.masterj3y.network.NetworkConstants.BASE_URL
 import io.ktor.client.*
 import io.ktor.client.request.*
 import io.ktor.http.*
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.serialization.Serializable
 import javax.inject.Inject
 
 interface SubtitleDataSource {
 
-    fun searchMovie(title: String): Flow<String?>
+    suspend fun searchMovie(title: String): String?
 
-    fun getMovieDetails(movieUrl: String): Flow<String?>
+    suspend fun getMovieDetails(movieUrl: String): String?
 
-    fun getSubtitleDownloadPath(subtitlePath: String): Flow<String?>
+    suspend fun getSubtitleDownloadPath(subtitlePath: String): String?
 }
 
 class SubtitleDataSourceImpl
 @Inject
 constructor(private val httpClient: HttpClient) : SubtitleDataSource {
 
-    override fun searchMovie(title: String): Flow<String?> = flow {
+    override suspend fun searchMovie(title: String): String? {
 
         val response: String? = httpClient.post("${BASE_URL}subtitles/searchbytitle") {
             contentType(ContentType.Application.Json)
             body = SearchMovieRequestBody(query = title)
         }
 
-        emit(response)
+        return response
     }
 
-    override fun getMovieDetails(movieUrl: String): Flow<String?> = flow {
-        val response: String? = httpClient.get("${BASE_URL}subtitles/$movieUrl")
-
-        emit(response)
+    override suspend fun getMovieDetails(movieUrl: String): String? {
+        return httpClient.get("${BASE_URL}subtitles/$movieUrl")
     }
 
-    override fun getSubtitleDownloadPath(subtitlePath: String): Flow<String?> = flow {
-        val response: String? = httpClient.get("${BASE_URL}$subtitlePath")
-
-        emit(response)
+    override suspend fun getSubtitleDownloadPath(subtitlePath: String): String? {
+        return httpClient.get("${BASE_URL}$subtitlePath")
     }
 }
 

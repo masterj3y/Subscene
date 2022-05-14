@@ -7,11 +7,9 @@ import github.masterj3y.subtitle.ui.download.DownloadSubtitleEffect
 import github.masterj3y.testutils.coroutine.CoroutinesTestRule
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.filter
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
@@ -25,7 +23,7 @@ class DownloadSubtitleViewModelTest {
     val coroutinesTestRule = CoroutinesTestRule()
 
     private val repository: SubtitleRepository = mock()
-    private val viewModel = DownloadSubtitleViewModel(repository)
+    private val viewModel = DownloadSubtitleViewModel(repository, Dispatchers.Default)
 
     @ExperimentalCoroutinesApi
     @Test
@@ -41,7 +39,7 @@ class DownloadSubtitleViewModelTest {
             )
         )
 
-        val result = viewModel.state.first()
+        val result = viewModel.state.take(2).last()
 
         result shouldNotBe null
         result.subtitlePreview shouldNotBe null
@@ -67,6 +65,6 @@ class DownloadSubtitleViewModelTest {
             .first()
 
         result shouldNotBe null
-        result.downloadSubtitle.path shouldBe mockData.path
+        result.downloadSubtitle.path shouldBe mockData.data?.path
     }
 }

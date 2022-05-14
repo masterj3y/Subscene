@@ -1,100 +1,70 @@
 package github.masterj3y.subtitle
 
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import github.masterj3y.mvi.reducer.Reducer
-import github.masterj3y.mvi.viewmodel.BaseViewModel
+import github.masterj3y.coroutines.di.qualifier.ViewModelCoroutineDispatcher
 import github.masterj3y.subscenecommon.data.SubtitleRepository
-import github.masterj3y.subtitle.model.MovieDetails
+import github.masterj3y.subscenecommon.model.MovieDetailsModel
+import github.masterj3y.subscenecommon.state.State
+import github.masterj3y.subscenecommon.state.StateStatus
 import github.masterj3y.subtitle.model.SubtitlePreview
 import github.masterj3y.subtitle.model.toMovieDetails
-import github.masterj3y.subtitle.ui.details.MovieDetailsEffect
-import github.masterj3y.subtitle.ui.details.MovieDetailsEvent
 import github.masterj3y.subtitle.ui.details.MovieDetailsState
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.plus
 import javax.inject.Inject
 
 @HiltViewModel
-class SubtitlesViewModel @Inject constructor(private val repository: SubtitleRepository) :
-    BaseViewModel<MovieDetailsState, MovieDetailsEffect>() {
+class SubtitlesViewModel @Inject constructor(
+    private val repository: SubtitleRepository,
+    @ViewModelCoroutineDispatcher
+    private val coroutineDispatcher: CoroutineDispatcher
+) : ViewModel() {
 
-    private val reducer = MovieDetailsReducer()
+    private val _moviePath = MutableStateFlow("")
 
-    override val state: StateFlow<MovieDetailsState> = reducer.state
-    override val effect: Flow<MovieDetailsEffect> = reducer.effect
+    private val _state = MutableStateFlow(MovieDetailsState.initial())
+    val state = _state.asStateFlow()
 
-    fun loadMovieDetails(moviePath: String) {
-        reducer.sendEvent(MovieDetailsEvent.Load(moviePath))
+    init {
+        _moviePath
+            .filter { it.isNotBlank() }
+            .onEach(::fetchMovieDetails)
+            .launchIn(viewModelScope + coroutineDispatcher)
     }
 
-    fun toggleDetailsBottomSheet(subtitlePreview: SubtitlePreview?) {
-        reducer.sendEvent(MovieDetailsEvent.ToggleDetailsBottomSheet(subtitlePreview))
+    fun loadMovieDetails(moviePath: String) = this._moviePath.update { moviePath }
+
+    fun toggleDetailsBottomSheet(subtitlePreview: SubtitlePreview?) = _state.update {
+        it.copy(subtitlePreviewBottomSheet = subtitlePreview)
     }
 
-    private inner class MovieDetailsReducer :
-        Reducer<MovieDetailsState, MovieDetailsEvent, MovieDetailsEffect>(
-            MovieDetailsState.initial()
-        ) {
+    private fun fetchMovieDetails(path: String) {
+        repository.getMovieDetails(path)
+            .onEach(::reduce)
+            .launchIn(viewModelScope + coroutineDispatcher)
+    }
 
-        override fun reduce(currentState: MovieDetailsState, event: MovieDetailsEvent) {
-            when (event) {
-                is MovieDetailsEvent.Load -> loadMovieDetails(event.moviePath)
-                is MovieDetailsEvent.ToggleDetailsBottomSheet -> setState(
-                    currentState.copy(
-                        subtitlePreviewBottomSheet = event.subtitlePreview
-                    )
-                )
-            }
-        }
-
-        private fun loadMovieDetails(moviePath: String) {
-            emitLoadingState()
-            viewModelScope.launch {
-                repository.getMovieDetails(moviePath)
-                    .onCompletion {
-                        if (it != null) emitErrorState()
-                    }
-                    .onEach {
-                        if (it == null) emitErrorState()
-                    }
-                    .catch {
-                        emitErrorState()
-                    }
-                    .filterNotNull()
-                    .map {
-                        it.toMovieDetails()
-                    }
-                    .collect {
-                        emitResultState(it)
-                    }
-            }
-        }
-
-        private fun emitLoadingState() = setState(
-            currentState.copy(
-                isLoading = true,
-                movieDetails = null,
-                hasAnErrorOccurred = false,
-                subtitlePreviewBottomSheet = null
-            )
-        )
-
-        private fun emitResultState(result: MovieDetails) =
-            setState(
-                currentState.copy(
-                    isLoading = false,
-                    movieDetails = result,
-                    hasAnErrorOccurred = false
-                )
-            )
-
-        private fun emitErrorState() = setState(
-            currentState.copy(
+    private fun reduce(data: State<MovieDetailsModel?>) = _state.update {
+        when (data.status) {
+            StateStatus.Loading -> state.value.copy(isLoading = true)
+            StateStatus.Success -> state.value.copy(
                 isLoading = false,
-                movieDetails = null,
+                movieDetails = data.data?.toMovieDetails(),
+                hasAnErrorOccurred = false
+            )
+            StateStatus.Error -> state.value.copy(
                 hasAnErrorOccurred = true
             )
-        )
+            StateStatus.Exception -> state.value.copy(
+                hasAnErrorOccurred = true
+            )
+        }
+    }
+
+    companion object {
+        private const val MOVIE_PATH = "key:movie-path"
     }
 }

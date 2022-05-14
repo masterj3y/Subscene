@@ -53,7 +53,7 @@ class SubtitleRepositoryTest : TestCase() {
             }
             .collect {
                 it shouldNotBe null
-                it?.path shouldNotBe ""
+                it.data?.path shouldNotBe ""
             }
     }
 }

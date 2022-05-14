@@ -4,16 +4,19 @@ import github.masterj3y.subscenecommon.extractor.Extractor
 import github.masterj3y.subscenecommon.model.DownloadSubtitleModel
 import github.masterj3y.subscenecommon.model.MovieDetailsModel
 import github.masterj3y.subscenecommon.model.SearchMovieResultItem
+import github.masterj3y.subscenecommon.state.State
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
 
 interface SubtitleRepository {
 
-    fun searchMovieByTitle(title: String): Flow<Map<String, List<SearchMovieResultItem>>?>
+    fun searchMovieByTitle(title: String): Flow<State<Map<String, List<SearchMovieResultItem>>?>>
 
-    fun getMovieDetails(movieUrl: String): Flow<MovieDetailsModel?>
+    fun getMovieDetails(movieUrl: String): Flow<State<MovieDetailsModel?>>
 
-    fun getDownloadSubtitlePath(subtitlePath: String): Flow<DownloadSubtitleModel?>
+    fun getDownloadSubtitlePath(subtitlePath: String): Flow<State<DownloadSubtitleModel?>>
 }
 
 class SubtitleRepositoryImpl(
@@ -23,13 +26,37 @@ class SubtitleRepositoryImpl(
     private val subtitleDownloadPathExtractor: Extractor<DownloadSubtitleModel?>
 ) : SubtitleRepository {
 
-    override fun searchMovieByTitle(title: String): Flow<Map<String, List<SearchMovieResultItem>>?> =
-        subtitleDataSource.searchMovie(title).map(movieExtractor::extract)
+    override fun searchMovieByTitle(title: String): Flow<State<Map<String, List<SearchMovieResultItem>>?>> =
+        flow {
+            emit(State.onLoading())
+            try {
+                val result = subtitleDataSource.searchMovie(title)
+                emit(State.onSuccess(movieExtractor.extract(result)))
+            } catch (e: Exception) {
+                emit(State.onError(e))
+            }
+        }.flowOn(Dispatchers.IO)
 
-    override fun getMovieDetails(movieUrl: String): Flow<MovieDetailsModel?> =
-        subtitleDataSource.getMovieDetails(movieUrl).map(subtitleExtractor::extract)
+    override fun getMovieDetails(movieUrl: String): Flow<State<MovieDetailsModel?>> =
+        flow<State<MovieDetailsModel?>> {
+            emit(State.onLoading())
+            try {
+                val result = subtitleDataSource.getMovieDetails(movieUrl)
+                emit(State.onSuccess(subtitleExtractor.extract(result)))
+            } catch (e: Exception) {
+                emit(State.onError(e))
+            }
+        }.flowOn(Dispatchers.IO)
 
-    override fun getDownloadSubtitlePath(subtitlePath: String): Flow<DownloadSubtitleModel?> =
-        subtitleDataSource.getSubtitleDownloadPath(subtitlePath)
-            .map(subtitleDownloadPathExtractor::extract)
+    override fun getDownloadSubtitlePath(subtitlePath: String): Flow<State<DownloadSubtitleModel?>> =
+        flow<State<DownloadSubtitleModel?>> {
+            emit(State.onLoading())
+            try {
+                val result = subtitleDataSource.getSubtitleDownloadPath(subtitlePath)
+                emit(State.onSuccess(subtitleDownloadPathExtractor.extract(result)))
+            } catch (e: Exception) {
+                emit(State.onError(e))
+                e.printStackTrace()
+            }
+        }.flowOn(Dispatchers.IO)
 }
