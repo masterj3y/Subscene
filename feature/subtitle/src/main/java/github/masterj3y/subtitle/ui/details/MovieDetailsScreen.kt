@@ -42,8 +42,6 @@ fun MovieDetails(
     viewModel: SubtitlesViewModel = hiltViewModel()
 ) {
 
-    val scope = rememberCoroutineScope()
-
     val state by viewModel.state.collectAsState()
 
     val scaffoldState = rememberBottomSheetScaffoldState()
