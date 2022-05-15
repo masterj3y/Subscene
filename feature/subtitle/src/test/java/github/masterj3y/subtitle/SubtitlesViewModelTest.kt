@@ -7,10 +7,12 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -22,8 +24,14 @@ class SubtitlesViewModelTest {
     @get:Rule
     val coroutinesTestRule = CoroutinesTestRule()
 
-    private val repository: SubtitleRepository = mock()
-    private val viewModel = SubtitlesViewModel(repository, Dispatchers.Default)
+    private lateinit var repository: SubtitleRepository
+    private lateinit var viewModel: SubtitlesViewModel
+
+    @Before
+    fun setup() {
+        repository = mock()
+        viewModel = SubtitlesViewModel(repository, Dispatchers.Default)
+    }
 
     @ExperimentalCoroutinesApi
     @Test
@@ -34,6 +42,8 @@ class SubtitlesViewModelTest {
         whenever(repository.getMovieDetails("fight club")).thenReturn(flowOf(mockData))
 
         viewModel.loadMovieDetails("fight club")
+
+        delay(1000)
 
         val result = viewModel.state
             .take(2)

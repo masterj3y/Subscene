@@ -11,6 +11,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
@@ -22,8 +23,14 @@ class DownloadSubtitleViewModelTest {
     @get:Rule
     val coroutinesTestRule = CoroutinesTestRule()
 
-    private val repository: SubtitleRepository = mock()
-    private val viewModel = DownloadSubtitleViewModel(repository, Dispatchers.Default)
+    private lateinit var repository: SubtitleRepository
+    private lateinit var viewModel: DownloadSubtitleViewModel
+
+    @Before
+    fun setup() {
+        repository = mock()
+        viewModel = DownloadSubtitleViewModel(repository, Dispatchers.Default)
+    }
 
     @ExperimentalCoroutinesApi
     @Test

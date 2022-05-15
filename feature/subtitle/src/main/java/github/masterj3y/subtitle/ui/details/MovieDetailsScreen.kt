@@ -4,6 +4,8 @@ import android.content.Intent
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -29,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import coil.request.ImageRequest
 import github.masterj3y.resources.R
+import github.masterj3y.resources.composables.LoadingScreen
 import github.masterj3y.resources.composables.SimpleTab
 import github.masterj3y.subtitle.SubtitlesViewModel
 import github.masterj3y.subtitle.model.MovieDetails
@@ -77,28 +80,24 @@ fun MovieDetails(
         },
         sheetShape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp)
     ) {
-        when {
-            state.isLoading -> Loading()
-            !state.isLoading && !state.hasAnErrorOccurred && state.movieDetails != null -> {
-                val movieDetails = state.movieDetails
-                if (movieDetails == null)
-                    Error()
-                else
-                    Result(
-                        movieDetails = movieDetails,
-                        onSubtitlePreviewClick =
-                        viewModel::toggleDetailsBottomSheet
-                    )
-            }
-            state.hasAnErrorOccurred -> Error()
-        }
-    }
-}
 
-@Composable
-private fun Loading() {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        CircularProgressIndicator()
+        Crossfade(targetState = state, animationSpec = tween(700)) { newState ->
+            when {
+                newState.isLoading -> LoadingScreen()
+                !newState.isLoading && !newState.hasAnErrorOccurred && newState.movieDetails != null -> {
+                    val movieDetails = state.movieDetails
+                    if (movieDetails == null)
+                        Error()
+                    else
+                        Result(
+                            movieDetails = movieDetails,
+                            onSubtitlePreviewClick =
+                            viewModel::toggleDetailsBottomSheet
+                        )
+                }
+                newState.hasAnErrorOccurred -> Error()
+            }
+        }
     }
 }
 
