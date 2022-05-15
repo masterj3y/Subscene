@@ -28,7 +28,7 @@ constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _searchQuery = savedStateHandle.getLiveData("", "")
+    private val _searchQuery = savedStateHandle.getLiveData("search-query", "")
     val searchQuery = _searchQuery.asFlow()
         .stateIn(
             viewModelScope + coroutineDispatcher,
