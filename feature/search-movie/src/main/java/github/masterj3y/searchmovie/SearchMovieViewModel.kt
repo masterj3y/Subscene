@@ -2,10 +2,10 @@ package github.masterj3y.searchmovie
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.masterj3y.coroutines.di.qualifier.ViewModelCoroutineDispatcher
-import github.masterj3y.extensions.getStateFlow
 import github.masterj3y.searchmovie.model.mapToMovieItem
 import github.masterj3y.searchmovie.ui.SearchMovieState
 import github.masterj3y.subscenecommon.data.SubtitleRepository
@@ -28,12 +28,13 @@ constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _searchQuery = savedStateHandle.getStateFlow(
-        viewModelScope + coroutineDispatcher,
-        "search-query",
-        ""
-    )
-    val searchQuery = _searchQuery
+    private val _searchQuery = savedStateHandle.getLiveData("", "")
+    val searchQuery = _searchQuery.asFlow()
+        .stateIn(
+            viewModelScope + coroutineDispatcher,
+            SharingStarted.Lazily,
+            ""
+        )
 
     @OptIn(FlowPreview::class)
     val state: StateFlow<SearchMovieState> =
@@ -52,7 +53,9 @@ constructor(
                 SearchMovieState.initial()
             )
 
-    fun search(movieTitle: String) = _searchQuery.update { movieTitle }
+    fun search(movieTitle: String) {
+        _searchQuery.value = movieTitle
+    }
 
     private fun reduce(data: State<Map<String, List<SearchMovieResultItem>>?>): SearchMovieState =
         when (data.status) {
