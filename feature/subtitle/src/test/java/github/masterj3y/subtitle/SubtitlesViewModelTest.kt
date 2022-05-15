@@ -7,6 +7,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.take
@@ -41,6 +42,8 @@ class SubtitlesViewModelTest {
         whenever(repository.getMovieDetails("fight club")).thenReturn(flowOf(mockData))
 
         viewModel.loadMovieDetails("fight club")
+
+        delay(1000)
 
         val result = viewModel.state
             .take(2)
