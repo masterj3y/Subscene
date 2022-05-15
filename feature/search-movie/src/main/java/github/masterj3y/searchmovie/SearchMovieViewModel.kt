@@ -1,9 +1,11 @@
 package github.masterj3y.searchmovie
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.masterj3y.coroutines.di.qualifier.ViewModelCoroutineDispatcher
+import github.masterj3y.extensions.getStateFlow
 import github.masterj3y.searchmovie.model.mapToMovieItem
 import github.masterj3y.searchmovie.ui.SearchMovieState
 import github.masterj3y.subscenecommon.data.SubtitleRepository
@@ -22,21 +24,27 @@ class SearchMovieViewModel
 constructor(
     private val repository: SubtitleRepository,
     @ViewModelCoroutineDispatcher
-    coroutineDispatcher: CoroutineDispatcher
+    coroutineDispatcher: CoroutineDispatcher,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val searchQuery = MutableStateFlow("")
+    private val _searchQuery = savedStateHandle.getStateFlow(
+        viewModelScope + coroutineDispatcher,
+        "search-query",
+        ""
+    )
+    val searchQuery = _searchQuery
 
     @OptIn(FlowPreview::class)
     val state: StateFlow<SearchMovieState> =
         searchQuery
+            .debounce(700)
             .filter {
                 it.isNotBlank()
             }
             .transform {
                 emitAll(repository.searchMovieByTitle(it))
             }
-            .debounce(700)
             .map(::reduce)
             .stateIn(
                 viewModelScope + coroutineDispatcher,
@@ -44,7 +52,7 @@ constructor(
                 SearchMovieState.initial()
             )
 
-    fun search(movieTitle: String) = searchQuery.update { movieTitle }
+    fun search(movieTitle: String) = _searchQuery.update { movieTitle }
 
     private fun reduce(data: State<Map<String, List<SearchMovieResultItem>>?>): SearchMovieState =
         when (data.status) {
