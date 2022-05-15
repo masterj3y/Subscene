@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,12 +32,18 @@ class SearchMovieViewModelTest {
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
 
-    private val repository: SubtitleRepository = mock()
-    private val viewModel = SearchMovieViewModel(
-        repository,
-        Dispatchers.Default,
-        SavedStateHandle()
-    )
+    private lateinit var repository: SubtitleRepository
+    private lateinit var viewModel: SearchMovieViewModel
+
+    @Before
+    fun setup() {
+        repository = mock()
+        viewModel = SearchMovieViewModel(
+            repository,
+            Dispatchers.Default,
+            SavedStateHandle()
+        )
+    }
 
     @Test
     fun `test search movie event`() = runTest {
