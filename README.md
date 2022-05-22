@@ -13,7 +13,6 @@ As part of this effort, I created the subscene repository that uses the latest t
 
 ### Modules
 - #### Common
-   - mvi
    - navigation
    - network
    - resources
