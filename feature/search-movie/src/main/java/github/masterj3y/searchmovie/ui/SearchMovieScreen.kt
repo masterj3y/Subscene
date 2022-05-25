@@ -1,11 +1,11 @@
 package github.masterj3y.searchmovie.ui
 
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
@@ -13,22 +13,24 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import github.masterj3y.navigation.LocalNavController
-import github.masterj3y.navigation.Route
 import github.masterj3y.resources.R
-import github.masterj3y.resources.composables.SimpleTab
+import github.masterj3y.resources.components.Loading
+import github.masterj3y.resources.components.SimpleTab
 import github.masterj3y.searchmovie.SearchMovieViewModel
 import github.masterj3y.searchmovie.model.MovieItem
 import kotlinx.coroutines.delay
 
 @Composable
-fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
-
-    val navController = LocalNavController.current
+fun SearchMovieScreen(
+    viewModel: SearchMovieViewModel = hiltViewModel(),
+    onMovieClick: (path: String) -> Unit
+) {
 
     val state by viewModel.state.collectAsState()
 
@@ -42,8 +44,12 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
 
     Scaffold(
         topBar = {
-            TopAppBar {
-                Box(modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)) {
+            Surface(elevation = 4.dp) {
+                Box(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(vertical = 8.dp, horizontal = 4.dp)
+                ) {
                     SearchInput(
                         placeholder = {
                             Text(text = stringResource(R.string.search_movie_input_placeholder))
@@ -54,47 +60,54 @@ fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
                 }
             }
         }
-    ) {
+    ) { padding ->
 
-        Box(modifier = Modifier.fillMaxSize()) {
+        Box(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .padding(padding)
+                .fillMaxSize()
+        ) {
 
-            when {
+            Crossfade(targetState = state) { state ->
+                when {
 
-                state.isLoading -> CircularProgressIndicator(
-                    modifier = Modifier.align(
-                        Alignment.Center
-                    )
-                )
+                    !state.isLoading && !state.hasAnErrorOccurred && state.result.isEmpty() -> Idle()
 
-                !state.isLoading && !state.hasAnErrorOccurred && state.result.isNotEmpty() -> {
-                    if (state.result.isNotEmpty())
+                    state.isLoading -> Loading()
+
+                    !state.isLoading && !state.hasAnErrorOccurred && state.result.isNotEmpty() -> {
                         Movies(
                             movies = state.result,
                             onMovieClick = { movieItem ->
                                 val moviePath = movieItem.url.substringAfterLast("/")
-                                Route.MovieDetails.navigate(
-                                    navController = navController,
-                                    moviePath = moviePath
-                                )
+                                onMovieClick(moviePath)
                             }
                         )
-                }
+                    }
 
-                state.hasAnErrorOccurred -> Error()
+                    state.hasAnErrorOccurred -> Error()
+                }
             }
         }
 
     }
 }
 
-@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun Idle() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Image(painter = painterResource(id = R.drawable.ils_search), contentDescription = null)
+    }
+}
+
 @Composable
 private fun Movies(
     movies: Map<String, List<MovieItem>>,
     onMovieClick: (MovieItem) -> Unit
 ) {
 
-    val (categoryKey, setCategoryKey) = remember {
+    val (categoryKey, setCategoryKey) = rememberSaveable {
         mutableStateOf(movies.keys.toList().first())
     }
 
@@ -125,48 +138,71 @@ private fun Tabs(
     selectedTab: String,
     onClick: (String) -> Unit
 ) {
-    Box(
+
+    Row(
         modifier = Modifier
             .fillMaxSize()
-            .padding(vertical = 8.dp)
+            .padding(horizontal = 8.dp, vertical = 8.dp)
     ) {
-        LazyRow {
 
-            item {
-                Spacer(modifier = Modifier.width(8.dp))
-            }
-
-            items(tabs.toList()) {
-                SimpleTab(
-                    text = it,
-                    isSelected = it == selectedTab,
-                    selectedColor = MaterialTheme.colors.background,
-                    unselectedColor = MaterialTheme.colors.primary,
-                    onClick = onClick
-                )
-            }
+        tabs.forEach { tab ->
+            SimpleTab(
+                modifier = Modifier
+                    .weight(1f / tabs.size),
+                text = tab,
+                isSelected = tab == selectedTab,
+                unselectedColor = Color.Gray,
+                onClick = onClick
+            )
         }
     }
 }
 
 @Composable
 private fun MovieItem(movie: MovieItem, onClick: (MovieItem) -> Unit) {
-    Column(
+    Surface(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .background(color = MaterialTheme.colors.primary.copy(alpha = .1f))
-            .clickable { onClick(movie) }
-            .padding(16.dp)
+            .padding(horizontal = 8.dp)
+            .padding(bottom = 8.dp),
+        shape = RoundedCornerShape(8.dp),
+        elevation = 1.dp
     ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick(movie) },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
 
-        Text(text = movie.title)
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = stringResource(id = R.string.movie_subtitle_count, movie.subtitles),
-            style = MaterialTheme.typography.body2
-        )
+            Box(
+                modifier = Modifier
+                    .size(70.dp)
+                    .background(
+                        Brush.radialGradient(
+                            listOf(
+                                Color.White.copy(alpha = .08f),
+                                Color.White.copy(alpha = .02f),
+                                Color.White.copy(alpha = .009f)
+                            )
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = movie.subtitles.toString(),
+                    style = MaterialTheme.typography.h5
+                )
+            }
+            Divider(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .width(1.dp)
+                    .height(32.dp)
+            )
+            Text(
+                modifier = Modifier.padding(end = 16.dp), text = movie.title, maxLines = 2
+            )
+        }
     }
 }
 

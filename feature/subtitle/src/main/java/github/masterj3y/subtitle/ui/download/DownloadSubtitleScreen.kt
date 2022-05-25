@@ -80,7 +80,7 @@ private fun Content(
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 modifier = Modifier.size(20.dp),
-                painter = painterResource(id = R.drawable.ic_baseline_person_24),
+                painter = painterResource(id = R.drawable.ic_person),
                 contentDescription = null
             )
             Spacer(modifier = Modifier.width(8.dp))
@@ -104,7 +104,7 @@ private fun Content(
                 )
             else
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_baseline_cloud_download_24),
+                    painter = painterResource(id = R.drawable.ic_download),
                     contentDescription = null
                 )
             Spacer(modifier = Modifier.width(8.dp))

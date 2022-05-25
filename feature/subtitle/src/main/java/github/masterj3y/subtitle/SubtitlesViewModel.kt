@@ -11,6 +11,7 @@ import github.masterj3y.subscenecommon.state.StateStatus
 import github.masterj3y.subtitle.model.SubtitlePreview
 import github.masterj3y.subtitle.model.toMovieDetails
 import github.masterj3y.subtitle.ui.details.MovieDetailsState
+import github.masterj3y.subtitle.ui.details.SubtitlePreviewBottomSheet
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.plus
@@ -37,8 +38,13 @@ class SubtitlesViewModel @Inject constructor(
 
     fun loadMovieDetails(moviePath: String) = this._moviePath.update { moviePath }
 
-    fun toggleDetailsBottomSheet(subtitlePreview: SubtitlePreview?) = _state.update {
-        it.copy(subtitlePreviewBottomSheet = subtitlePreview)
+    fun showSubtitlePreviewBottomSheet(subtitlePreview: SubtitlePreview) {
+        _state.value.subtitlePreviewBottomSheet.value =
+            SubtitlePreviewBottomSheet.Show(subtitlePreview)
+    }
+
+    fun hideSubtitlePreviewBottomSheet() {
+        _state.value.subtitlePreviewBottomSheet.value = SubtitlePreviewBottomSheet.Hide
     }
 
     private fun fetchMovieDetails(path: String) {
