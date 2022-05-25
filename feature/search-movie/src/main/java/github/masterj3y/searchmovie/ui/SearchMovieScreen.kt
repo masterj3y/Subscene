@@ -1,86 +1,207 @@
 package github.masterj3y.searchmovie.ui
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import github.masterj3y.navigation.LocalNavController
-import github.masterj3y.navigation.Route
 import github.masterj3y.resources.R
-import github.masterj3y.resources.composables.LoadingScreen
+import github.masterj3y.resources.components.Loading
+import github.masterj3y.resources.components.SimpleTab
 import github.masterj3y.searchmovie.SearchMovieViewModel
+import github.masterj3y.searchmovie.model.MovieItem
+import kotlinx.coroutines.delay
 
 @Composable
-fun SearchMovieScreen(viewModel: SearchMovieViewModel = hiltViewModel()) {
-
-    val navController = LocalNavController.current
+fun SearchMovieScreen(
+    viewModel: SearchMovieViewModel = hiltViewModel(),
+    onMovieClick: (path: String) -> Unit
+) {
 
     val state by viewModel.state.collectAsState()
 
-    val query by viewModel.searchQuery.collectAsState()
+    val (movieTitle, setMovieTitle) = rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(movieTitle) {
+        delay(700)
+        if (movieTitle.isNotBlank())
+            viewModel.search(movieTitle)
+    }
 
     Scaffold(
-        topBar = { SearchTopBar(query = query, onQueryChange = viewModel::search) }
-    ) {
-
-        Content(
-            state = state,
-            onNavToDetails = { path ->
-                Route.MovieDetails.navigate(
-                    navController = navController,
-                    moviePath = path
-                )
+        topBar = {
+            Surface(elevation = 4.dp) {
+                Box(
+                    modifier = Modifier
+                        .statusBarsPadding()
+                        .padding(vertical = 8.dp, horizontal = 4.dp)
+                ) {
+                    SearchInput(
+                        placeholder = {
+                            Text(text = stringResource(R.string.search_movie_input_placeholder))
+                        },
+                        value = movieTitle,
+                        onValueChange = setMovieTitle
+                    )
+                }
             }
-        )
+        }
+    ) { padding ->
+
+        Box(
+            modifier = Modifier
+                .navigationBarsPadding()
+                .padding(padding)
+                .fillMaxSize()
+        ) {
+
+            Crossfade(targetState = state) { state ->
+                when {
+
+                    !state.isLoading && !state.hasAnErrorOccurred && state.result.isEmpty() -> Idle()
+
+                    state.isLoading -> Loading()
+
+                    !state.isLoading && !state.hasAnErrorOccurred && state.result.isNotEmpty() -> {
+                        Movies(
+                            movies = state.result,
+                            onMovieClick = { movieItem ->
+                                val moviePath = movieItem.url.substringAfterLast("/")
+                                onMovieClick(moviePath)
+                            }
+                        )
+                    }
+
+                    state.hasAnErrorOccurred -> Error()
+                }
+            }
+        }
+
     }
 }
 
 @Composable
-private fun SearchTopBar(query: String, onQueryChange: (String) -> Unit) {
-    TopAppBar {
-        Box(modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)) {
-            SearchInput(
-                placeholder = {
-                    Text(text = stringResource(R.string.search_movie_input_placeholder))
-                },
-                value = query,
-                onValueChange = onQueryChange
+private fun Idle() {
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Image(painter = painterResource(id = R.drawable.ils_search), contentDescription = null)
+    }
+}
+
+@Composable
+private fun Movies(
+    movies: Map<String, List<MovieItem>>,
+    onMovieClick: (MovieItem) -> Unit
+) {
+
+    val (categoryKey, setCategoryKey) = rememberSaveable {
+        mutableStateOf(movies.keys.toList().first())
+    }
+
+    val items = remember(categoryKey) {
+        mutableStateOf(movies[categoryKey])
+    }
+
+    LazyColumn {
+        item {
+            Tabs(
+                tabs = movies.keys,
+                selectedTab = categoryKey,
+                onClick = setCategoryKey
+            )
+        }
+        items(items = items.value ?: listOf()) {
+            MovieItem(
+                movie = it,
+                onClick = onMovieClick
             )
         }
     }
 }
 
 @Composable
-private fun Content(state: SearchMovieState, onNavToDetails: (String) -> Unit) {
-    Crossfade(targetState = state, animationSpec = tween(700)) { newState ->
+private fun Tabs(
+    tabs: Set<String>,
+    selectedTab: String,
+    onClick: (String) -> Unit
+) {
 
-        when {
-            newState.isLoading -> LoadingScreen()
+    Row(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(horizontal = 8.dp, vertical = 8.dp)
+    ) {
 
-            !newState.isLoading && !newState.hasAnErrorOccurred && newState.result.isNotEmpty() -> {
-                if (newState.result.isNotEmpty())
-                    Movies(
-                        movies = newState.result,
-                        onMovieClick = { movieItem ->
-                            val moviePath = movieItem.url.substringAfterLast("/")
-                            onNavToDetails(moviePath)
-                        }
-                    )
+        tabs.forEach { tab ->
+            SimpleTab(
+                modifier = Modifier
+                    .weight(1f / tabs.size),
+                text = tab,
+                isSelected = tab == selectedTab,
+                unselectedColor = Color.Gray,
+                onClick = onClick
+            )
+        }
+    }
+}
+
+@Composable
+private fun MovieItem(movie: MovieItem, onClick: (MovieItem) -> Unit) {
+    Surface(
+        modifier = Modifier
+            .padding(horizontal = 8.dp)
+            .padding(bottom = 8.dp),
+        shape = RoundedCornerShape(8.dp),
+        elevation = 1.dp
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onClick(movie) },
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Box(
+                modifier = Modifier
+                    .size(70.dp)
+                    .background(
+                        Brush.radialGradient(
+                            listOf(
+                                Color.White.copy(alpha = .08f),
+                                Color.White.copy(alpha = .02f),
+                                Color.White.copy(alpha = .009f)
+                            )
+                        )
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = movie.subtitles.toString(),
+                    style = MaterialTheme.typography.h5
+                )
             }
-
-            newState.hasAnErrorOccurred -> Error()
+            Divider(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .width(1.dp)
+                    .height(32.dp)
+            )
+            Text(
+                modifier = Modifier.padding(end = 16.dp), text = movie.title, maxLines = 2
+            )
         }
     }
 }

@@ -5,16 +5,15 @@ import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.annotation.DrawableRes
 import androidx.compose.animation.Crossfade
-import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,11 +27,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import github.masterj3y.resources.R
-import github.masterj3y.resources.composables.LoadingScreen
-import github.masterj3y.resources.composables.SimpleTab
+import github.masterj3y.resources.components.Loading
+import github.masterj3y.resources.components.SimpleTab
 import github.masterj3y.subtitle.SubtitlesViewModel
 import github.masterj3y.subtitle.model.MovieDetails
 import github.masterj3y.subtitle.model.SubtitlePreview
@@ -41,68 +40,65 @@ import github.masterj3y.subtitle.ui.download.DownloadSubtitleScreen
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MovieDetails(
-    moviePath: String?,
-    viewModel: SubtitlesViewModel = hiltViewModel()
+    moviePath: String?, viewModel: SubtitlesViewModel = hiltViewModel(), onUpClick: () -> Unit
 ) {
 
     val state by viewModel.state.collectAsState()
 
-    val scaffoldState = rememberBottomSheetScaffoldState()
+    val bottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
 
     LaunchedEffect(Unit) {
-        if (!moviePath.isNullOrBlank())
-            viewModel.loadMovieDetails(moviePath)
+        if (!moviePath.isNullOrBlank()) viewModel.loadMovieDetails(moviePath)
     }
 
-    LaunchedEffect(state.subtitlePreviewBottomSheet) {
-        if (state.subtitlePreviewBottomSheet != null)
-            scaffoldState.bottomSheetState.expand()
-        else
-            scaffoldState.bottomSheetState.collapse()
+    LaunchedEffect(state.subtitlePreviewBottomSheet.value) {
+        if (state.subtitlePreviewBottomSheet.value is SubtitlePreviewBottomSheet.Show) bottomSheetState.show()
+        else bottomSheetState.hide()
     }
 
-    BackHandler(scaffoldState.bottomSheetState.isExpanded) {
-        viewModel.toggleDetailsBottomSheet(null)
+    BackHandler(bottomSheetState.isVisible) {
+        viewModel.hideSubtitlePreviewBottomSheet()
     }
 
-    BottomSheetScaffold(
-        scaffoldState = scaffoldState,
-        sheetPeekHeight = 0.dp,
-        sheetContent = {
+    ModalBottomSheetLayout(
+        modifier = Modifier.navigationBarsPadding(), sheetState = bottomSheetState, sheetContent = {
             Box(
                 modifier = Modifier
                     .defaultMinSize(minHeight = 1.dp)
                     .fillMaxWidth()
             ) {
-                if (state.subtitlePreviewBottomSheet != null)
-                    DownloadSubtitleScreen(subtitlePreview = state.subtitlePreviewBottomSheet!!)
-            }
-        },
-        sheetShape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp)
-    ) {
-
-        Crossfade(targetState = state, animationSpec = tween(700)) { newState ->
-            when {
-                newState.isLoading -> LoadingScreen()
-                !newState.isLoading && !newState.hasAnErrorOccurred && newState.movieDetails != null -> {
-                    val movieDetails = state.movieDetails
-                    if (movieDetails == null)
-                        Error()
-                    else
-                        Result(
-                            movieDetails = movieDetails,
-                            onSubtitlePreviewClick =
-                            viewModel::toggleDetailsBottomSheet
-                        )
+                if (state.subtitlePreviewBottomSheet.value is SubtitlePreviewBottomSheet.Show) {
+                    val subtitlePreview =
+                        (state.subtitlePreviewBottomSheet.value as SubtitlePreviewBottomSheet.Show).subtitlePreview
+                    DownloadSubtitleScreen(subtitlePreview = subtitlePreview)
                 }
-                newState.hasAnErrorOccurred -> Error()
+            }
+        }, sheetShape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp)
+    ) {
+        Crossfade(targetState = state) { state ->
+            when {
+                state.isLoading -> Loading()
+                !state.isLoading && !state.hasAnErrorOccurred && state.movieDetails != null -> {
+                    val movieDetails = state.movieDetails
+                    if (movieDetails == null) Error()
+                    else Result(
+                        movieDetails = movieDetails,
+                        onSubtitlePreviewClick = viewModel::showSubtitlePreviewBottomSheet,
+                        onUpClick = onUpClick
+                    )
+                }
+                state.hasAnErrorOccurred -> Error()
             }
         }
     }
 }
 
 @Composable
-private fun Result(movieDetails: MovieDetails, onSubtitlePreviewClick: (SubtitlePreview) -> Unit) {
+private fun Result(
+    movieDetails: MovieDetails,
+    onSubtitlePreviewClick: (SubtitlePreview) -> Unit,
+    onUpClick: () -> Unit
+) {
 
     val subtitleGroups = remember(movieDetails) {
         movieDetails.subtitlePreviewList.groupBy { it.language }
@@ -112,7 +108,6 @@ private fun Result(movieDetails: MovieDetails, onSubtitlePreviewClick: (Subtitle
         mutableStateOf(subtitleGroups.keys.toList().first())
     }
 
-
     LazyColumn {
 
         item {
@@ -120,7 +115,8 @@ private fun Result(movieDetails: MovieDetails, onSubtitlePreviewClick: (Subtitle
                 poster = movieDetails.poster,
                 title = movieDetails.title,
                 imdb = movieDetails.imdb,
-                year = movieDetails.year
+                year = movieDetails.year,
+                onUpClick = onUpClick
             )
         }
 
@@ -138,8 +134,7 @@ private fun Result(movieDetails: MovieDetails, onSubtitlePreviewClick: (Subtitle
 
         items(subtitleGroups[subtitlesGroupKey] ?: listOf()) { item ->
             SubtitlePreview(
-                subtitlePreview = item,
-                onClick = onSubtitlePreviewClick
+                subtitlePreview = item, onClick = onSubtitlePreviewClick
             )
         }
     }
@@ -147,10 +142,7 @@ private fun Result(movieDetails: MovieDetails, onSubtitlePreviewClick: (Subtitle
 
 @Composable
 private fun MovieDetailsHeader(
-    poster: String,
-    title: String,
-    imdb: String,
-    year: String
+    poster: String, title: String, imdb: String, year: String, onUpClick: () -> Unit
 ) {
 
     val context = LocalContext.current
@@ -158,58 +150,64 @@ private fun MovieDetailsHeader(
     val openImdb = remember(context) {
         { imdbUrl: String ->
             Intent(
-                Intent.ACTION_VIEW,
-                Uri.parse(imdbUrl)
+                Intent.ACTION_VIEW, Uri.parse(imdbUrl)
             ).let(context::startActivity)
         }
     }
 
-    Surface(color = MaterialTheme.colors.primary) {
-        Row(
+    Surface(elevation = 4.dp) {
+        Column(
             modifier = Modifier
+                .statusBarsPadding()
                 .fillMaxWidth()
-                .padding(horizontal = 8.dp, vertical = 16.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .padding(bottom = 16.dp)
         ) {
-            Image(
-                modifier = Modifier
-                    .size(80.dp)
-                    .clip(CircleShape),
-                painter = rememberAsyncImagePainter(
-                    ImageRequest.Builder(context)
-                        .data(poster)
-                        .crossfade(true)
-                        .build()
-                ),
-                contentScale = ContentScale.Crop,
-                contentDescription = null
-            )
 
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(start = 8.dp)
+            IconButton(onClick = onUpClick) {
+                Icon(imageVector = Icons.Filled.ArrowBack, contentDescription = null)
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.padding(horizontal = 16.dp), verticalAlignment = Alignment.Top
             ) {
-                Text(
-                    text = title,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    style = MaterialTheme.typography.h6
+                AsyncImage(
+                    modifier = Modifier
+                        .size(width = 90.dp, height = 150.dp)
+                        .clip(RoundedCornerShape(8.dp)),
+                    model = ImageRequest.Builder(context)
+                        .placeholder(R.drawable.img_poster_placeholder)
+                        .error(R.drawable.img_poster_placeholder).data(poster).crossfade(true)
+                        .build(),
+                    contentScale = ContentScale.Crop,
+                    contentDescription = null
                 )
 
-                Row(modifier = Modifier.padding(top = 8.dp)) {
-                    Chips(
-                        icon = R.drawable.ic_baseline_date_range_24,
-                        text = year,
-                        color = MaterialTheme.colors.background
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(start = 8.dp)
+                ) {
+                    Text(
+                        text = title,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis,
+                        style = MaterialTheme.typography.h6
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Chips(
-                        icon = R.drawable.ic_baseline_link_24,
-                        text = "IMDB",
-                        color = Color(0XFFDBA506),
-                        onClick = { openImdb(imdb) }
-                    )
+
+                    Row(modifier = Modifier.padding(top = 8.dp)) {
+                        Chips(
+                            icon = R.drawable.ic_note,
+                            text = year,
+                            color = MaterialTheme.colors.background
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Chips(icon = R.drawable.ic_baseline_link_24,
+                            text = "IMDB",
+                            color = Color(0XFFDBA506),
+                            onClick = { openImdb(imdb) })
+                    }
                 }
             }
         }
@@ -221,52 +219,74 @@ fun SubtitlePreview(subtitlePreview: SubtitlePreview, onClick: (SubtitlePreview)
     Surface(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 8.dp, vertical = 4.dp),
-        color = MaterialTheme.colors.primary.copy(alpha = .1f),
-        shape = RoundedCornerShape(16.dp)
+            .padding(horizontal = 8.dp)
+            .padding(bottom = 8.dp),
+        shape = RoundedCornerShape(8.dp),
+        elevation = 1.dp
     ) {
-        Column(
-            modifier = Modifier
-                .clickable { onClick(subtitlePreview) }
-                .padding(16.dp)
-        ) {
-            Text(text = subtitlePreview.name)
-            Spacer(modifier = Modifier.height(8.dp))
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-                Text(text = subtitlePreview.owner, style = MaterialTheme.typography.body2)
+        Row(modifier = Modifier
+            .clickable { onClick(subtitlePreview) }
+            .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically) {
+            Column(
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(end = 8.dp)
+            ) {
+                Text(text = subtitlePreview.name)
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        modifier = Modifier.size(20.dp),
+                        painter = painterResource(id = R.drawable.ic_person),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+                        Text(
+                            text = subtitlePreview.owner, style = MaterialTheme.typography.body2
+                        )
+                    }
+                }
             }
+
+            Divider(
+                modifier = Modifier
+                    .width(1.dp)
+                    .height(64.dp)
+            )
+
+            Spacer(modifier = Modifier.width(16.dp))
+
+            Icon(painter = painterResource(id = R.drawable.ic_download), contentDescription = null)
         }
     }
 }
 
 @Composable
 private fun LanguageTabs(
-    languages: List<String>,
-    selectedLanguage: String,
-    onClick: (String) -> Unit
+    languages: List<String>, selectedLanguage: String, onClick: (String) -> Unit
 ) {
 
-    Surface(color = MaterialTheme.colors.primary) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 8.dp)
-        ) {
-            LazyRow {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(vertical = 8.dp)
+    ) {
+        LazyRow {
 
-                item {
-                    Spacer(modifier = Modifier.width(8.dp))
-                }
+            item {
+                Spacer(modifier = Modifier.width(8.dp))
+            }
 
-                items(languages) {
-                    SimpleTab(
-                        text = it,
-                        isSelected = it == selectedLanguage,
-                        selectedColor = MaterialTheme.colors.background,
-                        unselectedColor = MaterialTheme.colors.primary,
-                        onClick = onClick
-                    )
-                }
+            items(languages) {
+                SimpleTab(
+                    modifier = Modifier.padding(end = 4.dp),
+                    text = it,
+                    isSelected = it == selectedLanguage,
+                    unselectedColor = Color.Gray,
+                    onClick = onClick
+                )
             }
         }
     }
@@ -274,37 +294,27 @@ private fun LanguageTabs(
 
 @Composable
 private fun Chips(
-    @DrawableRes icon: Int? = null,
-    text: String,
-    color: Color,
-    onClick: (() -> Unit)? = null
+    @DrawableRes icon: Int? = null, text: String, color: Color, onClick: (() -> Unit)? = null
 ) {
 
     Surface(
-        color = color,
-        shape = RoundedCornerShape(4.dp)
+        color = color, shape = RoundedCornerShape(4.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .clickable { onClick?.invoke() }
-                .padding(horizontal = 4.dp, vertical = 2.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(modifier = Modifier
+            .clickable { onClick?.invoke() }
+            .padding(horizontal = 4.dp, vertical = 2.dp),
+            verticalAlignment = Alignment.CenterVertically) {
 
-            if (icon != null)
-                Icon(
-                    modifier = Modifier
-                        .size(20.dp)
-                        .padding(end = 4.dp),
-                    painter = painterResource(id = icon),
-                    contentDescription = null
-                )
+            if (icon != null) Icon(
+                modifier = Modifier
+                    .size(20.dp)
+                    .padding(end = 4.dp),
+                painter = painterResource(id = icon),
+                contentDescription = null
+            )
 
             Text(
-                text = text,
-                fontSize = 14.sp,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
+                text = text, fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis
             )
         }
     }
@@ -313,8 +323,7 @@ private fun Chips(
 @Composable
 private fun Error() {
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center
     ) {
         Text(text = stringResource(R.string.error_text))
     }

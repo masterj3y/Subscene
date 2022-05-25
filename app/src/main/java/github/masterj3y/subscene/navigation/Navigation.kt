@@ -17,7 +17,13 @@ internal fun MainNavigation(
 
     Navigation(navController) {
 
-        composable(Route.SearchMovie.route) { SearchMovieScreen() }
+        composable(Route.SearchMovie.route) {
+            SearchMovieScreen(
+                onMovieClick = { path ->
+                    navController.navigate("${Route.MovieDetails.route}/$path")
+                }
+            )
+        }
 
         composable(
             route = "${Route.MovieDetails.route}/{${Route.MovieDetails.ARG_MOVIE_PATH}}",
@@ -28,11 +34,11 @@ internal fun MainNavigation(
             )
         ) {
             MovieDetails(
-                moviePath =
-                navController
+                moviePath = navController
                     .currentBackStackEntry
                     ?.arguments
-                    ?.getString(Route.MovieDetails.ARG_MOVIE_PATH)
+                    ?.getString(Route.MovieDetails.ARG_MOVIE_PATH),
+                onUpClick = navController::navigateUp
             )
         }
     }

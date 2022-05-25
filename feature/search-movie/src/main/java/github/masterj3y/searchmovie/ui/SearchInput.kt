@@ -8,13 +8,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import github.masterj3y.resources.R
 
 @Composable
 internal fun SearchInput(
@@ -59,6 +59,6 @@ internal fun SearchInput(
                 }
             }
         }
-        Icon(imageVector = Icons.Filled.Search, contentDescription = null)
+        Icon(painter = painterResource(id = R.drawable.ic_search), contentDescription = null)
     }
 }
