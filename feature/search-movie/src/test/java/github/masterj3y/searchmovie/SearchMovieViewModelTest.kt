@@ -1,5 +1,7 @@
 package github.masterj3y.searchmovie
 
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.SavedStateHandle
 import github.masterj3y.searchmovie.mockdata.MockData
 import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.testutils.coroutine.CoroutinesTestRule
@@ -11,11 +13,15 @@ import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.JUnit4
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
+@RunWith(JUnit4::class)
 @ExperimentalCoroutinesApi
 class SearchMovieViewModelTest {
 
@@ -23,8 +29,21 @@ class SearchMovieViewModelTest {
     @get:Rule
     val coroutineTestRule = CoroutinesTestRule()
 
-    private val repository: SubtitleRepository = mock()
-    private val viewModel = SearchMovieViewModel(repository, Dispatchers.Default)
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+
+    private lateinit var repository: SubtitleRepository
+    private lateinit var viewModel: SearchMovieViewModel
+
+    @Before
+    fun setup() {
+        repository = mock()
+        viewModel = SearchMovieViewModel(
+            repository,
+            Dispatchers.Default,
+            SavedStateHandle()
+        )
+    }
 
     @Test
     fun `test search movie event`() = runTest {
