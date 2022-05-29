@@ -10,7 +10,6 @@ buildscript {
 
         kotlin_version = '1.6.10'
         coroutines_version = '1.6.1'
-//        lottieVersion = '3.4.0'
 
         compose_version = '1.2.0-beta02'
 
