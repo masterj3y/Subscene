@@ -22,6 +22,8 @@
             <option value="$PROJECT_DIR$/feature" />
             <option value="$PROJECT_DIR$/feature/search-movie" />
             <option value="$PROJECT_DIR$/feature/subtitle" />
+            <option value="$PROJECT_DIR$/library" />
+            <option value="$PROJECT_DIR$/library/extensions" />
           </set>
         </option>
       </GradleProjectSettings>

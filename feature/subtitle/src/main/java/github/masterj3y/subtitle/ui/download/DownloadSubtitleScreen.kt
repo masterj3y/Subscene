@@ -19,6 +19,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import github.masterj3y.extensions.compose.rememberFlowWithLifecycle
 import github.masterj3y.resources.R
 import github.masterj3y.subtitle.DownloadSubtitleViewModel
 import github.masterj3y.subtitle.model.SubtitlePreview
@@ -29,7 +30,8 @@ internal fun DownloadSubtitleScreen(
     viewModel: DownloadSubtitleViewModel = hiltViewModel()
 ) {
 
-    val state by viewModel.state.collectAsState()
+    val stateLifecycleAware = rememberFlowWithLifecycle(viewModel.state)
+    val state by stateLifecycleAware.collectAsState(DownloadSubtitleState.initial())
 
     LaunchedEffect(subtitlePreview) {
         viewModel.initialise(subtitlePreview)

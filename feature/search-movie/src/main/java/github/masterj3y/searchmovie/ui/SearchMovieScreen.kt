@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import github.masterj3y.extensions.compose.rememberFlowWithLifecycle
 import github.masterj3y.resources.R
 import github.masterj3y.resources.components.Loading
 import github.masterj3y.resources.components.SimpleTab
@@ -32,7 +33,8 @@ fun SearchMovieScreen(
     onMovieClick: (path: String) -> Unit
 ) {
 
-    val state by viewModel.state.collectAsState()
+    val stateLifecycleAware = rememberFlowWithLifecycle(viewModel.state)
+    val state by stateLifecycleAware.collectAsState(SearchMovieState.initial())
 
     val (movieTitle, setMovieTitle) = rememberSaveable { mutableStateOf("") }
 
