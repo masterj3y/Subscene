@@ -1,13 +1,16 @@
 package github.masterj3y.subtitle.ui.download
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.material.Button
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.Icon
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Done
@@ -17,11 +20,13 @@ import androidx.compose.runtime.saveable.listSaver
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun DownloadButton(
     state: DownloadButtonState,
@@ -36,20 +41,27 @@ fun DownloadButton(
     a.firstVisibleItemIndex
 
     val downloadProgress = animateFloatAsState(
-        targetValue = state.progressValue
+        targetValue = state.progressValue,
+        animationSpec = tween(500)
     )
 
-    Button(
+    val enabled = state.progressState != ProgressState.SUCCESS
+    Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(46.dp),
-        enabled = state.progressState != ProgressState.SUCCESS,
-        onClick = onClick
+            .height(46.dp)
+            .clickable{
+                      if (enabled)
+                          onClick()
+            }
+            .clip(MaterialTheme.shapes.small)
+            .background(if (enabled) MaterialTheme.colors.primary else MaterialTheme.colors.surface),
+        contentAlignment=Alignment.Center,
     ) {
-        AnimatedVisibility(visible = state.progressState == ProgressState.IDLE) {
+        AnimatedVisibility(visible = state.progressState == ProgressState.IDLE, enter = scaleIn(animationSpec = tween(500)), exit = scaleOut(animationSpec = tween(500))) {
             Text(text = idleText, maxLines = 1, overflow = TextOverflow.Ellipsis)
         }
-        AnimatedVisibility(visible = state.progressState == ProgressState.DOWNLOADING) {
+        AnimatedVisibility(visible = state.progressState == ProgressState.DOWNLOADING, enter = scaleIn(animationSpec = tween(500)), exit = scaleOut(animationSpec = tween(500))) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(contentAlignment = Alignment.Center) {
                     CircularProgressIndicator(
@@ -67,7 +79,7 @@ fun DownloadButton(
                 Text(text = downloadingText)
             }
         }
-        AnimatedVisibility(visible = state.progressState == ProgressState.SUCCESS) {
+        AnimatedVisibility(visible = state.progressState == ProgressState.SUCCESS, enter = scaleIn(animationSpec = tween(500)), exit = scaleOut(animationSpec = tween(500))) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Filled.Done,
@@ -77,7 +89,7 @@ fun DownloadButton(
                 Text(text = successText)
             }
         }
-        AnimatedVisibility(visible = state.progressState == ProgressState.FAILED) {
+        AnimatedVisibility(visible = state.progressState == ProgressState.FAILED, enter = scaleIn(animationSpec = tween(500)), exit = scaleOut(animationSpec = tween(500))) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
                     imageVector = Icons.Filled.Close,
