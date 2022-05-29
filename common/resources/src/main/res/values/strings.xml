@@ -3,5 +3,10 @@
     <string name="error_text">An error has occurred</string>
     <string name="retry">Retry</string>
     <string name="search_movie_input_placeholder">Movie title …</string>
-    <string name="download_subtitle_button_text">Download %1$s subtitle</string>
+    <string name="download_subtitle_button_idle">Download subtitle</string>
+    <string name="download_subtitle_button_downloading">Downloading</string>
+    <string name="download_subtitle_button_success">Success</string>
+    <string name="download_subtitle_button_failed">Failed</string>
+    <string name="external_storage_access_permission_request_message">To save subtitle file external storage access permission is required</string>
+    <string name="grant_external_storage_access_permission">Grant External Storage Access Permission</string>
 </resources>

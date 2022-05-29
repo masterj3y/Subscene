@@ -1,12 +1,12 @@
 package github.masterj3y.subtitle.ui.download
 
-import github.masterj3y.subtitle.model.DownloadSubtitle
+import androidx.compose.runtime.Stable
 import github.masterj3y.subtitle.model.SubtitlePreview
 
+@Stable
 data class DownloadSubtitleState(
     val subtitlePreview: SubtitlePreview?,
-    val isLoadingDownloadPath: Boolean,
-    val downloadPath: String?,
+    val downloadButtonState: DownloadButtonState,
     val hasAnErrorOccurred: Boolean,
 ) {
 
@@ -14,14 +14,8 @@ data class DownloadSubtitleState(
 
         fun initial() = DownloadSubtitleState(
             subtitlePreview = null,
-            isLoadingDownloadPath = false,
-            downloadPath = null,
+            downloadButtonState = DownloadButtonState(),
             hasAnErrorOccurred = false
         )
     }
-}
-
-sealed class DownloadSubtitleEffect {
-
-    class PathReceived(val downloadSubtitle: DownloadSubtitle) : DownloadSubtitleEffect()
 }
