@@ -1,7 +1,11 @@
 package github.masterj3y.subtitle.ui.download
 
-import android.content.Intent
-import android.net.Uri
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
@@ -13,8 +17,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import github.masterj3y.network.NetworkConstants.BASE_URL
 import github.masterj3y.resources.R
 import github.masterj3y.subtitle.DownloadSubtitleViewModel
 import github.masterj3y.subtitle.model.SubtitlePreview
@@ -25,38 +29,23 @@ internal fun DownloadSubtitleScreen(
     viewModel: DownloadSubtitleViewModel = hiltViewModel()
 ) {
 
-    val context = LocalContext.current
-
     val state by viewModel.state.collectAsState()
-
-    val effect by viewModel.effect.collectAsState(initial = null)
-
-    val openDownloadPath = remember(context) {
-        { path: String ->
-            val url = BASE_URL + path.substringAfter("/")
-            Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                .let(context::startActivity)
-        }
-    }
 
     LaunchedEffect(subtitlePreview) {
         viewModel.initialise(subtitlePreview)
     }
 
-    LaunchedEffect(effect) {
-        when (effect) {
-            is DownloadSubtitleEffect.PathReceived -> {
-                openDownloadPath((effect as DownloadSubtitleEffect.PathReceived).downloadSubtitle.path)
-            }
-            else -> {}
-        }
+    DisposableEffect(subtitlePreview) {
+        viewModel.initialise(subtitlePreview)
+
+        onDispose(viewModel::resetDownloadButtonState)
     }
 
     Content(
         subtitlePreview = state.subtitlePreview,
-        isDownloadingSubtitlePath = state.isLoadingDownloadPath,
+        downloadButtonState = state.downloadButtonState,
         onDownloadClick = {
-            viewModel.getDownloadPath(it.url)
+            viewModel.downloadSubtitle(it.url)
         }
     )
 }
@@ -64,7 +53,7 @@ internal fun DownloadSubtitleScreen(
 @Composable
 private fun Content(
     subtitlePreview: SubtitlePreview?,
-    isDownloadingSubtitlePath: Boolean,
+    downloadButtonState: DownloadButtonState,
     onDownloadClick: (SubtitlePreview) -> Unit
 ) {
 
@@ -76,15 +65,24 @@ private fun Content(
             .padding(16.dp)
     ) {
 
+        val context = LocalContext.current
+
+        var storagePermissionGranted by remember { mutableStateOf(isStoragePermissionGranted(context)) }
+
+        val permissionRequestLauncher =
+            rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { permissionGranted ->
+                storagePermissionGranted = permissionGranted
+            }
+
         Text(text = subtitlePreview.name)
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                modifier = Modifier.size(20.dp),
-                painter = painterResource(id = R.drawable.ic_person),
-                contentDescription = null
-            )
-            Spacer(modifier = Modifier.width(8.dp))
-            CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+        CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    modifier = Modifier.size(20.dp),
+                    painter = painterResource(id = R.drawable.ic_person),
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = subtitlePreview.owner,
                     style = MaterialTheme.typography.body2
@@ -92,28 +90,38 @@ private fun Content(
             }
         }
         Spacer(modifier = Modifier.height(32.dp))
-        Button(
-            modifier = Modifier.fillMaxWidth(),
-            onClick = { onDownloadClick(subtitlePreview) }) {
 
-            if (isDownloadingSubtitlePath)
-                CircularProgressIndicator(
-                    modifier = Modifier.size(24.dp),
-                    strokeWidth = 1.dp,
-                    color = MaterialTheme.colors.onPrimary
-                )
-            else
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_download),
-                    contentDescription = null
-                )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text(
-                text = stringResource(
-                    id = R.string.download_subtitle_button_text,
-                    subtitlePreview.language
-                )
+        if (storagePermissionGranted || Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+            DownloadButton(
+                state = downloadButtonState,
+                idleText = stringResource(id = R.string.download_subtitle_button_idle),
+                downloadingText = stringResource(id = R.string.download_subtitle_button_downloading),
+                successText = stringResource(id = R.string.download_subtitle_button_success),
+                failedText = stringResource(id = R.string.download_subtitle_button_failed),
+                onClick = { onDownloadClick(subtitlePreview) }
             )
+        else
+            StoragePermission(
+                onRequest = {
+                    permissionRequestLauncher.launch(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                }
+            )
+    }
+}
+
+@Composable
+private fun StoragePermission(onRequest: () -> Unit) {
+
+    Column {
+        Text(text = stringResource(R.string.external_storage_access_permission_request_message))
+        Button(modifier = Modifier.fillMaxWidth(), onClick = onRequest) {
+            Text(text = stringResource(R.string.grant_external_storage_access_permission))
         }
     }
 }
+
+private fun isStoragePermissionGranted(context: Context): Boolean =
+    ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.WRITE_EXTERNAL_STORAGE
+    ) == PackageManager.PERMISSION_GRANTED

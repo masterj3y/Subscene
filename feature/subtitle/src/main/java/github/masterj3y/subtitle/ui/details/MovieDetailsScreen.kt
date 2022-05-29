@@ -56,12 +56,20 @@ fun MovieDetails(
         else bottomSheetState.hide()
     }
 
+    // clear download subtitle screen from sheet content
+    LaunchedEffect(bottomSheetState.isVisible) {
+        if (!bottomSheetState.isVisible)
+            viewModel.hideSubtitlePreviewBottomSheet()
+    }
+
     BackHandler(bottomSheetState.isVisible) {
         viewModel.hideSubtitlePreviewBottomSheet()
     }
 
     ModalBottomSheetLayout(
-        modifier = Modifier.navigationBarsPadding(), sheetState = bottomSheetState, sheetContent = {
+        modifier = Modifier.navigationBarsPadding(),
+        sheetState = bottomSheetState,
+        sheetContent = {
             Box(
                 modifier = Modifier
                     .defaultMinSize(minHeight = 1.dp)
@@ -73,7 +81,8 @@ fun MovieDetails(
                     DownloadSubtitleScreen(subtitlePreview = subtitlePreview)
                 }
             }
-        }, sheetShape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp)
+        },
+        sheetShape = RoundedCornerShape(topEnd = 16.dp, topStart = 16.dp)
     ) {
         Crossfade(targetState = state) { state ->
             when {
