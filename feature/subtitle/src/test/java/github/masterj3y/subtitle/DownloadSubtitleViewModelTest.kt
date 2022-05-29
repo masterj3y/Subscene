@@ -12,6 +12,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.take
@@ -70,6 +71,8 @@ class DownloadSubtitleViewModelTest {
             .thenReturn(flowOf(DownloadState.Success))
 
         viewModel.downloadSubtitle("some path")
+
+        delay(1000)
 
         val result = viewModel.state.take(2).last()
 
