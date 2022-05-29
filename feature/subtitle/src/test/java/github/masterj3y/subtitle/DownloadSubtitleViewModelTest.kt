@@ -16,6 +16,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -62,7 +63,7 @@ class DownloadSubtitleViewModelTest {
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `test download subtitle event`() = runTest {
+    fun `test download subtitle event`() = runBlocking {
 
         val mockData = MockData.mockDownloadSubtitleModel
 
