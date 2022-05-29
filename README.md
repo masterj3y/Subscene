@@ -4,6 +4,8 @@ As part of this effort, I created the subscene repository that uses the latest t
 
 UI/UX designed by nanaforever2377@gmail.com and alizamani.developer@gmail.com
 
+|<img width="300" src="/previews/1-search.png" align="center"/>|<img width="300" src="/previews/2-details.png" align="center"/>|<img width="300"  src="/previews/3-download.png" align="center"/>|
+
 ### Tech stack and libraries that have been used so far:
 - Kotlin
 - Jetpack Compose
