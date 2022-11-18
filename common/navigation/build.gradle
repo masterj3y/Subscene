@@ -36,7 +36,7 @@ android {
 
 dependencies {
 
-    def navigation_version = '2.4.2'
+    def navigation_version = '2.5.3'
     implementation "androidx.navigation:navigation-compose:$navigation_version"
 
     testImplementation 'junit:junit:4.13.2'
