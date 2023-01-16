@@ -35,6 +35,7 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion compose_version
     }
+    namespace 'github.masterj3y.subtitle'
 }
 
 dependencies {
