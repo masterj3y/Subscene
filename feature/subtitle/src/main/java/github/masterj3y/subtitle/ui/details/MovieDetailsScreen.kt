@@ -71,6 +71,7 @@ fun MovieDetails(
     ModalBottomSheetLayout(
         modifier = Modifier.navigationBarsPadding(),
         sheetState = bottomSheetState,
+        scrimColor = Color.Black.copy(alpha = .5f),
         sheetContent = {
             Box(
                 modifier = Modifier
