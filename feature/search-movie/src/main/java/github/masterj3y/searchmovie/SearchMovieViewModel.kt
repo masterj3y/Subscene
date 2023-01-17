@@ -29,7 +29,7 @@ constructor(
 ) : ViewModel() {
 
     private val _searchQuery = savedStateHandle.getLiveData("search-query", "")
-    val searchQuery = _searchQuery.asFlow()
+    private val searchQueryFlow = _searchQuery.asFlow()
         .stateIn(
             viewModelScope + coroutineDispatcher,
             SharingStarted.Lazily,
@@ -38,7 +38,7 @@ constructor(
 
     @OptIn(FlowPreview::class)
     val state: StateFlow<SearchMovieState> =
-        searchQuery
+        searchQueryFlow
             .debounce(700)
             .filter {
                 it.isNotBlank()
