@@ -53,6 +53,7 @@ fun SearchMovieScreen(
                         .padding(vertical = 8.dp, horizontal = 4.dp)
                 ) {
                     SearchInput(
+                        modifier = Modifier.fillMaxWidth(),
                         placeholder = {
                             Text(text = stringResource(R.string.search_movie_input_placeholder))
                         },
