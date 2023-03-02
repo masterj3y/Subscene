@@ -33,7 +33,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion compose_compiler_version
     }
     namespace 'github.masterj3y.subtitle'
 }
@@ -46,9 +46,9 @@ dependencies {
     implementation project(':common:navigation')
     implementation project(':library:extensions')
 
-    implementation "androidx.compose.ui:ui:$compose_version"
+    implementation "androidx.compose.ui:ui:$compose_ui_version"
     implementation "androidx.compose.material:material:$compose_material_version"
-    implementation "androidx.compose.ui:ui-tooling-preview:$compose_version"
+    implementation "androidx.compose.ui:ui-tooling-preview:$compose_ui_version"
 
     implementation "com.google.dagger:hilt-android:$dagger_version"
     implementation "androidx.hilt:hilt-navigation-compose:$dagger_hilt_navigation_compose"
