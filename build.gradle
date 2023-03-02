@@ -11,10 +11,11 @@ buildscript {
         kotlin_version = '1.6.10'
         coroutines_version = '1.6.4'
 
-        compose_version = '1.3.1'
+        compose_version = '1.3.3'
+        compose_material_version = '1.3.1'
 
         // Dagger Hilt
-        dagger_version = '2.44.2'
+        dagger_version = '2.45'
         dagger_hilt_version = '1.0.0'
         dagger_hilt_navigation_compose = '1.0.0'
 
@@ -22,7 +23,7 @@ buildscript {
 
         coil_version = '2.2.2'
 
-        kotest_version = '5.5.4'
+        kotest_version = '5.5.5'
     }
 
     dependencies {
@@ -31,8 +32,8 @@ buildscript {
 
 }// Top-level build file where you can add configuration options common to all sub-projects/modules.
 plugins {
-    id 'com.android.application' version '7.4.0' apply false
-    id 'com.android.library' version '7.4.0' apply false
+    id 'com.android.application' version '7.4.2' apply false
+    id 'com.android.library' version '7.4.2' apply false
     id 'org.jetbrains.kotlin.android' version '1.7.10' apply false
 }
 
