@@ -1,6 +1,6 @@
 package github.masterj3y.subtitle
 
-import github.masterj3y.subscenecommon.data.SubtitleRepository
+import github.masterj3y.data.data.SubtitleRepository
 import github.masterj3y.subtitle.mockdata.MockData
 import github.masterj3y.testutils.coroutine.CoroutinesTestRule
 import io.kotest.matchers.shouldBe

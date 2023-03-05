@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        includeBuild("build-logic")
         gradlePluginPortal()
         google()
         mavenCentral()
@@ -14,12 +15,12 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Subscene"
 include ':app'
-include ':common:network'
-include ':common:testutils'
-include ':common:subscene'
-include ':common:resources'
-include ':common:navigation'
+include ':core:network'
+include ':core:testutils'
+include ':core:data'
+include ':core:designsystem'
+include ':core:navigation'
+include ':core:coroutines'
 include ':feature:search-movie'
 include ':feature:subtitle'
-include ':common:coroutines'
 include ':library:extensions'

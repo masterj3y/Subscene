@@ -1,6 +1,6 @@
 package github.masterj3y.searchmovie.model
 
-import github.masterj3y.subscenecommon.model.SearchMovieResultItem
+import github.masterj3y.data.model.SearchMovieResultItem
 
 internal fun List<SearchMovieResultItem>.mapToMovieItem(): List<MovieItem> = map {
     MovieItem(

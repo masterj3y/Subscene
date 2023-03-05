@@ -19,8 +19,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import github.masterj3y.designsystem.R
 import github.masterj3y.extensions.compose.rememberFlowWithLifecycle
-import github.masterj3y.resources.R
 import github.masterj3y.subtitle.DownloadSubtitleViewModel
 import github.masterj3y.subtitle.model.SubtitlePreview
 

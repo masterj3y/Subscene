@@ -1,7 +1,7 @@
 package github.masterj3y.subtitle
 
+import github.masterj3y.data.data.SubtitleRepository
 import github.masterj3y.network.NetworkConstants
-import github.masterj3y.subscenecommon.data.SubtitleRepository
 import github.masterj3y.subtitle.downloader.DownloadState
 import github.masterj3y.subtitle.downloader.Downloader
 import github.masterj3y.subtitle.mockdata.MockData

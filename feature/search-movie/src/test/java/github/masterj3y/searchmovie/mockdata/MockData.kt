@@ -1,7 +1,7 @@
 package github.masterj3y.searchmovie.mockdata
 
-import github.masterj3y.subscenecommon.model.SearchMovieResultItem
-import github.masterj3y.subscenecommon.state.State
+import github.masterj3y.data.model.SearchMovieResultItem
+import github.masterj3y.data.state.State
 
 object MockData {
 

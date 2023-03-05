@@ -1,9 +1,9 @@
 package github.masterj3y.subtitle.mockdata
 
-import github.masterj3y.subscenecommon.model.DownloadSubtitleModel
-import github.masterj3y.subscenecommon.model.MovieDetailsModel
-import github.masterj3y.subscenecommon.model.SubtitlePreviewModel
-import github.masterj3y.subscenecommon.state.State
+import github.masterj3y.data.model.DownloadSubtitleModel
+import github.masterj3y.data.model.MovieDetailsModel
+import github.masterj3y.data.model.SubtitlePreviewModel
+import github.masterj3y.data.state.State
 
 object MockData {
 

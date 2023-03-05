@@ -29,10 +29,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import github.masterj3y.designsystem.R
+import github.masterj3y.designsystem.components.Loading
+import github.masterj3y.designsystem.components.SimpleTab
 import github.masterj3y.extensions.compose.rememberFlowWithLifecycle
-import github.masterj3y.resources.R
-import github.masterj3y.resources.components.Loading
-import github.masterj3y.resources.components.SimpleTab
 import github.masterj3y.subtitle.SubtitlesViewModel
 import github.masterj3y.subtitle.model.MovieDetails
 import github.masterj3y.subtitle.model.SubtitlePreview

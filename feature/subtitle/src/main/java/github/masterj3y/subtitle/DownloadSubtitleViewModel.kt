@@ -4,9 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.masterj3y.coroutines.di.qualifier.ViewModelCoroutineDispatcher
+import github.masterj3y.data.data.SubtitleRepository
+import github.masterj3y.data.state.StateStatus
 import github.masterj3y.network.NetworkConstants.BASE_URL
-import github.masterj3y.subscenecommon.data.SubtitleRepository
-import github.masterj3y.subscenecommon.state.StateStatus
 import github.masterj3y.subtitle.downloader.DownloadState
 import github.masterj3y.subtitle.downloader.Downloader
 import github.masterj3y.subtitle.model.DownloadSubtitle

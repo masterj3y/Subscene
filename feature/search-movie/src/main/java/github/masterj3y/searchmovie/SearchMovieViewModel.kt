@@ -6,12 +6,12 @@ import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.masterj3y.coroutines.di.qualifier.ViewModelCoroutineDispatcher
+import github.masterj3y.data.data.SubtitleRepository
+import github.masterj3y.data.model.SearchMovieResultItem
+import github.masterj3y.data.state.State
+import github.masterj3y.data.state.StateStatus
 import github.masterj3y.searchmovie.model.mapToMovieItem
 import github.masterj3y.searchmovie.ui.SearchMovieState
-import github.masterj3y.subscenecommon.data.SubtitleRepository
-import github.masterj3y.subscenecommon.model.SearchMovieResultItem
-import github.masterj3y.subscenecommon.state.State
-import github.masterj3y.subscenecommon.state.StateStatus
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*

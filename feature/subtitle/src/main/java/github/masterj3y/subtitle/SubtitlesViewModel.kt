@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import github.masterj3y.coroutines.di.qualifier.ViewModelCoroutineDispatcher
-import github.masterj3y.subscenecommon.data.SubtitleRepository
-import github.masterj3y.subscenecommon.model.MovieDetailsModel
-import github.masterj3y.subscenecommon.state.State
-import github.masterj3y.subscenecommon.state.StateStatus
+import github.masterj3y.data.data.SubtitleRepository
+import github.masterj3y.data.model.MovieDetailsModel
+import github.masterj3y.data.state.State
+import github.masterj3y.data.state.StateStatus
 import github.masterj3y.subtitle.model.SubtitlePreview
 import github.masterj3y.subtitle.model.toMovieDetails
 import github.masterj3y.subtitle.ui.details.MovieDetailsState

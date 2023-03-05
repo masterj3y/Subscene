@@ -2,9 +2,9 @@ package github.masterj3y.subtitle.model
 
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
-import github.masterj3y.subscenecommon.model.DownloadSubtitleModel
-import github.masterj3y.subscenecommon.model.MovieDetailsModel
-import github.masterj3y.subscenecommon.model.SubtitlePreviewModel
+import github.masterj3y.data.model.DownloadSubtitleModel
+import github.masterj3y.data.model.MovieDetailsModel
+import github.masterj3y.data.model.SubtitlePreviewModel
 
 internal fun MovieDetailsModel.toMovieDetails(): MovieDetails =
     MovieDetails(

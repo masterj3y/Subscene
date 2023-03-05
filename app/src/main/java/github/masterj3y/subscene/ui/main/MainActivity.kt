@@ -9,7 +9,7 @@ import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import androidx.core.view.WindowCompat
 import dagger.hilt.android.AndroidEntryPoint
-import github.masterj3y.resources.theme.SubsceneTheme
+import github.masterj3y.designsystem.theme.SubsceneTheme
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

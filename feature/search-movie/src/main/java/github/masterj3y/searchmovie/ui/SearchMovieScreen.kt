@@ -19,10 +19,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import github.masterj3y.designsystem.R
+import github.masterj3y.designsystem.components.Loading
+import github.masterj3y.designsystem.components.SimpleTab
 import github.masterj3y.extensions.compose.rememberFlowWithLifecycle
-import github.masterj3y.resources.R
-import github.masterj3y.resources.components.Loading
-import github.masterj3y.resources.components.SimpleTab
 import github.masterj3y.searchmovie.SearchMovieViewModel
 import github.masterj3y.searchmovie.model.MovieItem
 import kotlinx.coroutines.delay
